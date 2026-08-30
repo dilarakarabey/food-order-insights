@@ -1,0 +1,27 @@
+# Private imports and local data
+private-data/
+*.sqlite
+*.sqlite3
+*.db
+
+# ChatGPT project mirror files (not part of the public project)
+/sources/
+/AGENTS.md
+
+# Local configuration and secrets
+.env
+.env.local
+.env.*.local
+credentials.json
+token.json
+*.pem
+*.key
+
+# Application output
+node_modules/
+.next/
+coverage/
+dist/
+
+# System files
+.DS_Store

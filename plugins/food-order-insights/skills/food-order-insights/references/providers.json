@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "providers": [
+    {
+      "id": "trendyol-yemek",
+      "display_name": "Trendyol Yemek",
+      "locales": ["tr-TR"],
+      "confirmed_senders": [
+        "infotrendyolgo@mail.trendyolgo.com"
+      ],
+      "discovery_terms": [
+        "Trendyol Yemek",
+        "sipariş",
+        "siparişin"
+      ],
+      "receipt_hints": [
+        "restoran",
+        "ürün",
+        "ara toplam",
+        "teslimat",
+        "toplam"
+      ]
+    },
+    {
+      "id": "getir-yemek",
+      "display_name": "GetirYemek",
+      "locales": ["tr-TR"],
+      "confirmed_senders": [],
+      "discovery_terms": [
+        "GetirYemek",
+        "Getir Yemek",
+        "sipariş"
+      ],
+      "receipt_hints": [
+        "restoran",
+        "ürün",
+        "teslimat ücreti",
+        "toplam"
+      ]
+    },
+    {
+      "id": "uber-eats",
+      "display_name": "Uber Eats",
+      "locales": ["en", "tr-TR"],
+      "confirmed_senders": [],
+      "discovery_terms": [
+        "Uber Eats",
+        "order",
+        "receipt"
+      ],
+      "receipt_hints": [
+        "restaurant",
+        "items",
+        "delivery fee",
+        "service fee",
+        "total"
+      ]
+    }
+  ]
+}

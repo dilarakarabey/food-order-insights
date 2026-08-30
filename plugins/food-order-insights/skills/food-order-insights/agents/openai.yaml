@@ -1,0 +1,11 @@
+interface:
+  display_name: "Food Order Insights"
+  short_description: "Analyze orders, risks, habits, and meal ideas"
+  default_prompt: "Use $food-order-insights to analyze my food-delivery orders from Gmail, show my Risk Report and lifestyle recommendations, and offer an Excel export."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "gmail"
+      description: "Gmail search and read tools for receipt emails"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/food-order-insights/receipt-schema.json",
+  "title": "Canonical food-delivery receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "gmail_message_id",
+    "provider",
+    "message_received_at",
+    "status",
+    "currency",
+    "items",
+    "total_paid",
+    "confidence",
+    "warnings"
+  ],
+  "properties": {
+    "gmail_message_id": { "type": "string" },
+    "provider": { "type": "string" },
+    "provider_order_id": { "type": ["string", "null"] },
+    "message_received_at": { "type": "string", "format": "date-time" },
+    "ordered_at": { "type": ["string", "null"], "format": "date-time" },
+    "restaurant_name": { "type": ["string", "null"] },
+    "status": {
+      "type": "string",
+      "enum": ["placed", "completed", "cancelled", "refunded", "partially_refunded", "unknown"]
+    },
+    "currency": { "type": ["string", "null"] },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["raw_name", "quantity", "extras", "customer_note"],
+        "properties": {
+          "raw_name": { "type": "string" },
+          "quantity": { "type": ["number", "null"], "minimum": 0 },
+          "unit_price": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "description": "Non-negative base unit price. Exclude a separately priced extra."
+          },
+          "line_total": {
+            "type": ["number", "null"],
+            "minimum": 0,
+            "description": "Non-negative base item line total. Exclude extras only when they are represented separately with prices."
+          },
+          "variant": { "type": ["string", "null"] },
+          "extras": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "price"],
+              "properties": {
+                "name": { "type": "string" },
+                "price": {
+                  "type": ["number", "null"],
+                  "minimum": 0,
+                  "description": "Non-negative extra charge; null when included in the item price or not stated."
+                }
+              }
+            }
+          },
+          "customer_note": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "food_subtotal": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Non-negative food subtotal including charged extras."
+    },
+    "delivery_fee": { "type": ["number", "null"], "minimum": 0 },
+    "service_fee": { "type": ["number", "null"], "minimum": 0 },
+    "small_order_fee": { "type": ["number", "null"], "minimum": 0 },
+    "tip": { "type": ["number", "null"], "minimum": 0 },
+    "discount": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Non-negative discount magnitude. Subtract when validating totals even if the receipt displays a minus sign."
+    },
+    "refund_amount": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Non-negative amount refunded after charge; subtract only when reporting net spend."
+    },
+    "total_paid": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Non-negative amount charged for the order after receipt-level discounts and before later refunds."
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

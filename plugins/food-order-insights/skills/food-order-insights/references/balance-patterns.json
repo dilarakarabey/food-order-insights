@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "normalization": "Unicode NFKC; lowercase; replace punctuation with spaces; collapse whitespace; match whole tokens or phrases",
+  "fried_preparation": [
+    "fried",
+    "deep fried",
+    "crispy",
+    "kızartma",
+    "kızarmış",
+    "çıtır",
+    "pane"
+  ],
+  "sweetened_drink": [
+    "coca cola",
+    "coca-cola",
+    "cola",
+    "pepsi",
+    "fanta",
+    "sprite",
+    "gazoz",
+    "ice tea",
+    "iced tea",
+    "milkshake"
+  ],
+  "dessert": [
+    "dessert",
+    "tatlı",
+    "baklava",
+    "künefe",
+    "sütlaç",
+    "cheesecake",
+    "brownie",
+    "cookie",
+    "dondurma",
+    "ice cream"
+  ]
+}

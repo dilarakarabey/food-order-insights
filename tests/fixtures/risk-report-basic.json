@@ -1,0 +1,50 @@
+{
+  "description": "Synthetic eligible Risk Report aggregate covering 12 complete Monday-through-Sunday weeks without a user budget",
+  "inputs": {
+    "completed_orders": 36,
+    "covered_calendar_weeks": 12,
+    "high_confidence_completed_orders": 33,
+    "orders_with_usable_time": 34,
+    "usable_time_definition": "explicit ordered_at or original placed-message fallback",
+    "late_hour_orders": 9,
+    "orders_with_classifiable_dish": 34,
+    "top_three_dish_orders": 19,
+    "orders_classifiable_by_controlled_vocabulary": 32,
+    "balance_vocabulary_version": "1.0.0",
+    "orders_with_balance_opportunity": 16,
+    "monthly_delivery_budget": null
+  },
+  "expected": {
+    "evidence_gate": "eligible",
+    "usable_order_share": 0.9167,
+    "factors": {
+      "delivery_reliance": {
+        "measure": 3.0,
+        "points": 16,
+        "maximum": 25
+      },
+      "schedule_disruption": {
+        "measure": 0.2647,
+        "points": 14,
+        "maximum": 20
+      },
+      "meal_concentration": {
+        "measure": 0.5588,
+        "points": 14,
+        "maximum": 20
+      },
+      "repeated_balance_opportunities": {
+        "measure": 0.5,
+        "points": 14,
+        "maximum": 20
+      },
+      "user_budget_pressure": {
+        "status": "ineligible_without_user_budget"
+      }
+    },
+    "eligible_points": 58,
+    "eligible_maximum": 85,
+    "score": 68,
+    "label": "Elevated signal"
+  }
+}
