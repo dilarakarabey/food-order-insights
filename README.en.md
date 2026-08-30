@@ -63,15 +63,21 @@ OpenAI's plugin architecture supports skill-only plugins and allows an MCP serve
 
 If Gmail tools are unavailable, the skill asks the user to connect Gmail. It does not fall back to requesting downloaded receipt files.
 
-## Install for local development
+## Installation
 
-Until the plugin is published in the universal plugin directory, clone this repository and add it as a repository marketplace:
+You do not need to clone the repository. First add the Food Order Insights marketplace in your terminal:
 
 ```bash
-codex plugin marketplace add /absolute/path/to/food-order-insights
+codex plugin marketplace add dilarakarabey/food-order-insights
 ```
 
-Then install **Food Order Insights** and ensure the separate Gmail plugin is connected.
+Then install the plugin:
+
+```bash
+codex plugin add food-order-insights@personal
+```
+
+Start a new Codex session after installation. Make sure the Gmail connector is connected.
 
 ## Current provider coverage
 

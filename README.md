@@ -63,15 +63,21 @@ OpenAI eklenti mimarisi yalnızca beceri içeren eklentileri destekler; proje il
 
 Gmail araçları kullanılamıyorsa eklenti, kullanıcıdan Gmail'i bağlamasını ister. Alternatif olarak fiş veya e-posta dosyası indirmesini talep etmez.
 
-## Yerel geliştirme için kurulum
+## Kurulum
 
-Eklenti evrensel eklenti dizininde yayımlanana kadar bu depoyu klonlayın ve depo tabanlı bir marketplace olarak ekleyin:
+Depoyu bilgisayarınıza klonlamanız gerekmez. Terminalde önce Food Order Insights marketplace'ini ekleyin:
 
 ```bash
-codex plugin marketplace add /food-order-insights/deposunun/mutlak/yolu
+codex plugin marketplace add dilarakarabey/food-order-insights
 ```
 
-Ardından **Food Order Insights** eklentisini kurun ve ayrı Gmail eklentisinin bağlı olduğundan emin olun.
+Ardından eklentiyi kurun:
+
+```bash
+codex plugin add food-order-insights@personal
+```
+
+Kurulumdan sonra Codex'te yeni bir oturum başlatın. Gmail connector'ünün bağlı olduğundan emin olun.
 
 ## Güncel sağlayıcı kapsamı
 
