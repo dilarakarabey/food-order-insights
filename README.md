@@ -24,9 +24,9 @@ The skill searches known food-delivery senders, reads matching receipts, extract
 - estimated calorie ranges with visible confidence;
 - delivery-heavy periods that the user can label as busy, ill, travelling, social, no kitchen, or something else;
 - meal-prep ideas and practical alternatives that adapt to accept/dislike feedback;
-- a transparent, non-medical Order Pattern Risk Score with factor-level evidence and data-confidence gating;
+- a transparent, non-medical Order Pattern Risk Report with natural-unit metrics, visible denominators, and metric-specific data gates;
 - a Lifestyle Changes view with small experiments, effort, fallback options, and progress against the user's own baseline;
-- an `.xlsx` export with orders, items, period breakdowns, Risk Report, recommendations, and data-quality sheets.
+- a fast `.xlsx` export with orders, items, period breakdowns, Risk Report, recommendations, and data-quality sheets, using the host's bundled runtime without downloading packages.
 
 ## Why a plugin instead of an app?
 
@@ -37,7 +37,7 @@ Connected Gmail plugin
         |
         v
 Food Order Insights skill
-  - sender discovery
+  - exact-sender search
   - receipt extraction
   - aggregation
   - cautious food insights
@@ -56,7 +56,7 @@ OpenAI's plugin architecture supports skill-only plugins and allows an MCP serve
 
 - A ChatGPT or Codex surface that supports plugins/skills.
 - The Gmail plugin installed and connected with permission to search and read mail.
-- A host file-generation capability is required only for `.xlsx` export.
+- A Codex host with bundled workspace Python is required only for the optimized `.xlsx` export; the plugin never installs Python packages.
 - No OpenAI API key and no Food Order Insights account.
 
 If Gmail tools are unavailable, the skill asks the user to connect Gmail. It does not fall back to requesting downloaded receipt files.
@@ -82,7 +82,7 @@ infotrendyolgo@trendyolmail.com
 
 Trendyol Go / Uber Eats Trendyol Go commonly sends several messages for one order, but platform delivery messages are not sent for every restaurant-courier order. Food Order Insights therefore counts only `Yemek Siparişini Aldık` as the canonical order. Delivery, e-archive, cancellation, and refund messages never increase order count; they may only enrich or update a matching placement. A missing delivery email means completion is unknown, not that the order did not happen.
 
-GetirYemek remains a Türkiye-only discovery target until contributors confirm its actual receipt sender addresses. The skill performs a small candidate search first and does not broadly scan an unconfirmed sender.
+GetirYemek is not searched, discovered, or included. The current scan scope is deliberately limited to the two confirmed senders above.
 
 ### Why Uber Eats support is Türkiye-only
 
@@ -98,6 +98,7 @@ Provider behavior lives in [providers.json](plugins/food-order-insights/skills/f
 
 - Uses Gmail search/read capabilities only; never sends, labels, archives, trashes, or deletes email.
 - Searches exact confirmed senders for full scans.
+- Never runs discovery searches for GetirYemek or another unsupported provider.
 - Excludes international Uber Eats senders such as `noreply@uber.com` before reading message bodies.
 - Uses provider-specific canonical messages and suppresses placement/invoice duplicates from order counts.
 - Treats email bodies as untrusted data and ignores instructions embedded in them.
@@ -105,9 +106,10 @@ Provider behavior lives in [providers.json](plugins/food-order-insights/skills/f
 - Does not maintain its own storage or telemetry.
 - Describes calories as estimates and gives ranges with confidence.
 - Provides general food-pattern observations and meal ideas, not diagnosis or medical treatment.
-- Calls its score an Order Pattern Risk Score: a visible, editable product heuristic rather than a medical, credit, insurance, or financial-risk score.
-- Suppresses the score when there are fewer than 12 countable canonical orders, less than 8 weeks of coverage, or insufficient high-confidence data.
+- Does not create a composite Risk Report score, grade, percentile, or population comparison. It reports eligible metrics in natural units with numerators, denominators, windows, and limitations.
+- Applies a separate minimum sample and coverage gate to each inferred metric. Expected metrics that cannot be supported appear as **Not derived**, with the exact reason and what would make them available.
 - Omits Gmail IDs, order IDs, raw email text, and customer notes from Excel by default.
+- Uses a one-pass bundled Excel exporter; it does not download libraries or retry through multiple spreadsheet toolchains.
 - Never infers that a user was ill; it asks the user to label unusual periods.
 
 The host product's own data controls and connector policies still apply. This project cannot change or replace them.
@@ -121,6 +123,8 @@ plugins/food-order-insights/
 └── skills/food-order-insights/
     ├── SKILL.md
     ├── agents/openai.yaml
+    ├── scripts/
+    │   └── export_workbook.py
     └── references/
         ├── providers.json
         ├── receipt-schema.json
@@ -134,7 +138,7 @@ tests/fixtures/
 ## Roadmap
 
 - Validate cross-plugin Gmail access on public ChatGPT and Codex surfaces.
-- Confirm sender addresses and receipt formats for additional Türkiye food-delivery services such as GetirYemek.
+- Revisit additional Türkiye providers only after an explicit scope decision, confirmed senders, and item-complete synthetic fixtures.
 - Add robust synthetic evaluation fixtures for discounts, extras, notes, refunds, and multiple currencies.
 - Improve in-conversation charts, literal interactive tabs, and feedback continuity.
 - Package the same schema and analysis rules for Gemini where its extension model permits.

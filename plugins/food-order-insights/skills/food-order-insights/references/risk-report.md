@@ -1,126 +1,85 @@
 # Risk Report
 
-Read this reference when the user requests a Risk Report, risk scan, score, warning level, or Findeks-like summary.
+Read this reference when the user requests a Risk Report, risk scan, warning summary, or Findeks-like overview.
 
-## Meaning and evidence gate
+## Meaning
 
-The report is an explainable scan of **order-pattern change opportunities visible in food-order emails**. It is not a medical, nutritional, psychological, credit, or financial-risk assessment.
+The **Order Pattern Risk Report** is a descriptive review of change opportunities visible in supported food-order emails. It is not a medical, nutritional, psychological, credit, or financial-risk assessment. It measures ordering records, not confirmed food consumption or the user's full lifestyle.
 
-A **countable order** is one canonical placement order that has not been explicitly cancelled. Include status `placed` when the provider does not reliably send delivery confirmations; its completion remains unknown. Include refunded or partially refunded orders unless a matched message explicitly says they were cancelled before fulfillment, and use net spend where available. This report measures ordering behavior, not confirmed food consumption.
+Do not produce a composite score, points, grade, percentile, traffic-light status, or population comparison. The available email data and product-defined thresholds do not validate such a number. Report each eligible metric in its natural unit with its numerator, denominator, time window, coverage, and limitation.
 
-Calculate an overall Order Pattern Risk Score only when all of these are true:
+A **countable order** is one canonical placement order that has not been explicitly cancelled. Include status `placed` when the provider does not reliably send delivery confirmations; label completion as unknown. Include refunded or partially refunded orders unless a matched message says they were cancelled before fulfillment. Use net spend where available.
 
-- at least 12 countable orders are available;
-- the scan covers at least 8 complete calendar weeks;
-- at least 75% of countable orders have parse confidence of `0.75` or higher;
-- at least three of the four non-budget factors below are eligible.
+A **complete covered week** is a Monday-through-Sunday week wholly inside the requested scan interval for which the exact-sender search reached its final page without a tool failure. Count weeks with zero orders. Exclude partial boundary weeks and weeks affected by an unfinished search. A complete covered month follows the same rule for the first through last calendar day.
 
-Otherwise show `Insufficient data` instead of a score. Still report coverage, directly observed facts, and which evidence gate failed.
+## Metric eligibility
 
-## Factors
+Data-sufficiency thresholds below decide only whether the metric is stable enough to show. They are not health or behavioral thresholds.
 
-Use countable orders only. Treat the thresholds as transparent product defaults, not scientific or population norms.
+### Order frequency
 
-A **complete covered week** is a Monday-through-Sunday week wholly inside the requested scan interval for which the exact-sender search completed through its final pagination page without a tool failure. Successful pagination is normal. Count weeks with zero orders. Exclude partial boundary weeks and any week affected by failed or unfinished pagination. Use this same definition for the evidence gate, delivery-reliance denominator, and workbook export.
+Show countable orders per complete covered week only with at least four complete covered weeks. Report total countable orders, complete weeks, and the arithmetic rate. Do not label the rate high or low. With fewer than four weeks, show the exact order count but mark the weekly rate **Not derived**.
 
-### 1. Delivery reliance — maximum 25 points
+### Late-order timing
 
-Calculate countable orders placed inside complete covered weeks divided by the number of complete covered weeks:
+Use the share of countable orders placed from 22:00 through 04:59 in the user's timezone. The denominator is orders with a usable analysis time.
 
-| Orders per week | Points |
-|---:|---:|
-| `<= 1` | 0 |
-| `> 1` and `<= 2` | 8 |
-| `> 2` and `<= 4` | 16 |
-| `> 4` | 25 |
+A usable time is either the explicit receipt `ordered_at` or the Gmail timestamp of the canonical placement email when `ordered_at` is absent. Never use delivery, invoice, cancellation, refund, courier-update, or marketing timestamps.
 
-### 2. Schedule disruption — maximum 20 points
+Show this metric only when all are true:
 
-Use the share of countable orders with a **usable analysis order time** placed from 22:00 through 04:59 in the user's timezone. The denominator is countable orders with a usable time, not all countable orders.
+- at least 10 countable orders have usable times;
+- usable-time coverage is at least 80% of countable orders;
+- at least four complete covered weeks are available.
 
-A time is usable when it is either:
+Report `late orders / usable-time orders`, the percentage, and how many timestamps used the Gmail fallback. Call it an ordering-time pattern, not sleep disruption.
 
-1. the explicit receipt `ordered_at` value; or
-2. the Gmail message timestamp from the original placed/order-confirmation receipt when `ordered_at` is absent.
+### Meal concentration
 
-Do not use the timestamp of a delivery, cancellation, refund, courier-update, or marketing message as order time. Track `receipt` versus `message_fallback` as the time basis. A message fallback remains usable but inherits the receipt's `-0.05` confidence deduction.
+Normalize obvious spelling variants only; do not merge distinct dishes because they seem similar. Show the share of classifiable countable orders represented by the three most frequent dishes only when all are true:
 
-| Late-hour share | Points |
-|---:|---:|
-| `< 10%` | 0 |
-| `>= 10%` and `< 20%` | 7 |
-| `>= 20%` and `< 35%` | 14 |
-| `>= 35%` | 20 |
+- at least 10 countable orders are available;
+- at least 80% contain a classifiable dish;
+- the scan includes at least four complete covered weeks.
 
-Call this a schedule signal, not a sleep measurement. If order time is unavailable for more than 25% of countable orders, mark the factor ineligible.
+Report the three dish names, their individual counts, and `top-three orders / classifiable orders`. Do not interpret concentration as nutritional quality.
 
-### 3. Meal concentration — maximum 20 points
+### Receipt-visible preparation signals
 
-Normalize only obvious spelling variants; do not merge distinct dishes merely because they seem similar. Calculate the share of classifiable countable orders represented by the three most frequent dishes:
+Use `balance-patterns.json` only as a controlled vocabulary. Normalize with Unicode NFKC, lowercase, replace punctuation with spaces, and collapse whitespace. Match whole tokens or phrases. Do not translate, stem, infer synonyms, or add terms during a scan.
 
-| Top-three dish share | Points |
-|---:|---:|
-| `< 35%` | 0 |
-| `>= 35%` and `< 50%` | 7 |
-| `>= 50%` and `< 70%` | 14 |
-| `>= 70%` | 20 |
+A countable order is classifiable when at least one non-empty item name was extracted with parse confidence of `0.75` or higher. Count at most one hit per order when an item, variant, or extra explicitly matches `fried_preparation`, `sweetened_drink`, or `dessert`.
 
-If fewer than 75% of countable orders contain a classifiable dish, mark the factor ineligible.
+Show the metric only when all are true:
 
-### 4. Repeated balance opportunities — maximum 20 points
+- at least 10 countable orders are classifiable;
+- classifiable coverage is at least 80% of countable orders;
+- at least four complete covered weeks are available.
 
-Use `balance-patterns.json` as the controlled vocabulary. Normalize both the controlled phrases and visible item, variant, and extra names with Unicode NFKC normalization, lowercase them, replace punctuation with spaces, and collapse whitespace. Match whole tokens or whole phrases only. Do not translate, stem, infer synonyms, or add terms during a scan.
+Report `matched orders / classifiable orders`, the percentage, category counts, matched phrases, and vocabulary version. State that a non-match means only that the controlled phrase was not visible; it does not prove a meal was balanced or healthy.
 
-A countable order is classifiable when at least one non-empty item name was extracted with parse confidence of `0.75` or higher. Mark at most one hit per classifiable order when any normalized item, variant, or extra matches a phrase in `fried_preparation`, `sweetened_drink`, or `dessert`. Record the matched category and phrase. A non-match means only that no controlled phrase was visible; it does not prove the meal was balanced.
+### Spending and budget context
 
-| Share with a balance opportunity | Points |
-|---:|---:|
-| `< 25%` | 0 |
-| `>= 25%` and `< 40%` | 7 |
-| `>= 40%` and `< 60%` | 14 |
-| `>= 60%` | 20 |
+Always keep currencies separate. Exact gross and net totals may be shown when their source fields are available. Show average monthly net spend only with at least two complete covered calendar months; otherwise mark it **Not derived**.
 
-If fewer than 75% of countable orders are classifiable by the rule above, mark the factor ineligible. Show the classified-order denominator, the controlled-vocabulary version, and the share of hits based on explicit phrases. Other model-inferred food observations may appear in narrative recommendations but must not change this score.
+Compare spend with a budget only when the user supplies a delivery budget in the same currency and cadence. Report the amount and percentage of that user-defined budget. Never infer income, affordability, debt, or financial distress. Without a budget, explain that budget pressure was not derived because no personal baseline was supplied.
 
-### 5. User-budget pressure — optional, maximum 15 points
+### Trends
 
-Include this factor only when the user supplies a monthly delivery budget. Compare average monthly net delivery spend with that budget:
+Derive a trend only when two adjacent, non-overlapping windows can each independently satisfy the metric's eligibility rules. Prefer the most recent four complete weeks versus the preceding four complete weeks. Each window must also contain at least six countable orders.
 
-| Budget used | Points |
-|---:|---:|
-| `<= 100%` | 0 |
-| `> 100%` and `<= 110%` | 5 |
-| `> 110%` and `<= 125%` | 10 |
-| `> 125%` | 15 |
+Report both window values and the absolute change; for shares, also report percentage-point change. Do not use `improving`, `worsening`, or causal language. If either window fails, mark the trend **Not derived** and state which window or field was insufficient.
 
-Never infer income, affordability, debt, or financial distress. Without a user-supplied budget, omit this factor from both numerator and denominator.
-
-## Score and labels
-
-Sum eligible factor points and divide by the sum of their maximum points:
-
-```text
-score = round(100 * eligible_points / eligible_max_points)
-```
-
-| Score | Label |
-|---:|---|
-| 0–24 | Lower signal |
-| 25–49 | Emerging signal |
-| 50–74 | Elevated signal |
-| 75–100 | Strong signal |
-
-Avoid red/green moral framing. Always show the point contribution of every eligible factor and name ineligible factors.
-
-## Trend and report layout
-
-When both windows contain at least six countable orders, compare the most recent four complete weeks with the preceding four complete weeks. Show direction for each factor as `improving`, `stable`, or `increasing`, but do not invent a trend when the factor cannot be recomputed for both periods.
+## Report layout
 
 Present:
 
-1. score or `Insufficient data`, label, and a one-sentence limitation;
-2. coverage period, countable-order count, status breakdown, and usable-order share;
-3. factor table with measure, threshold band, points, maximum, confidence, and trend;
-4. the top two contributing signals in neutral language;
-5. up to three linked Lifestyle Changes;
-6. a plain statement that receipts do not capture home-cooked meals, groceries, exercise, sleep, medical history, or the full diet.
+1. a one-sentence scope and limitation;
+2. coverage period, search completeness, countable-order count, status breakdown, and parse-confidence coverage;
+3. an **Available metrics** table with metric, value, numerator/denominator, window, coverage, and what it does and does not mean;
+4. up to two neutral observations supported by eligible metrics;
+5. a **Not derived** table for expected metrics that failed a gate, with the exact reason and what additional data or user input would make each available;
+6. up to three linked Lifestyle Changes, only when their underlying metric is eligible;
+7. a plain statement that receipts omit home-cooked meals, groceries, exercise, sleep, medical history, and the rest of the user's diet.
+
+Do not replace an ineligible metric with a model estimate. Do not create an overall label from the count or direction of available signals.

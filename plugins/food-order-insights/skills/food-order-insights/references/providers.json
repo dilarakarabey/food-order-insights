@@ -1,9 +1,9 @@
 {
-  "version": 2,
+  "version": 3,
   "scope": {
     "country_code": "TR",
     "country_name": "Türkiye",
-    "note": "Uber Eats support is limited to the Türkiye-specific Uber Eats Trendyol Go / former Trendyol Go email format."
+    "note": "Only the Türkiye-specific Uber Eats Trendyol Go / former Trendyol Go email format is in scan scope. Providers not listed here must not be searched or discovered."
   },
   "global_exclusions": [
     {
@@ -39,34 +39,11 @@
           "gmail_thread_id"
         ]
       },
-      "discovery_terms": [
-        "Uber Eats Trendyol Go",
-        "Trendyol Yemek",
-        "sipariş",
-        "siparişin"
-      ],
       "receipt_hints": [
         "restoran",
         "ürün",
         "ara toplam",
         "teslimat",
-        "toplam"
-      ]
-    },
-    {
-      "id": "getir-yemek",
-      "display_name": "GetirYemek",
-      "locales": ["tr-TR"],
-      "confirmed_senders": [],
-      "discovery_terms": [
-        "GetirYemek",
-        "Getir Yemek",
-        "sipariş"
-      ],
-      "receipt_hints": [
-        "restoran",
-        "ürün",
-        "teslimat ücreti",
         "toplam"
       ]
     }

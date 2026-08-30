@@ -1,0 +1,31 @@
+{
+  "description": "Synthetic small sample where descriptive order count is allowed but expected inferred Risk Report metrics are withheld",
+  "inputs": {
+    "countable_orders": 5,
+    "complete_covered_weeks": 3,
+    "orders_with_usable_time": 4,
+    "orders_with_classifiable_dish": 3,
+    "orders_classifiable_by_controlled_vocabulary": 3,
+    "complete_covered_months": 0,
+    "monthly_delivery_budget": null
+  },
+  "expected": {
+    "descriptive_facts": {"countable_orders": 5},
+    "not_derived": [
+      "orders_per_complete_week",
+      "late_order_share",
+      "top_three_dish_share",
+      "receipt_visible_preparation_share",
+      "average_monthly_net_spend",
+      "budget_usage",
+      "trend"
+    ],
+    "forbidden_outputs": [
+      "composite_score",
+      "points",
+      "grade",
+      "percentile",
+      "risk_label"
+    ]
+  }
+}

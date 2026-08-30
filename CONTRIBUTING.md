@@ -15,6 +15,8 @@ Create a synthetic fixture that preserves only the structure needed to reproduce
 
 ## Adding a provider
 
+The runtime scans only providers already approved in the registry; it never discovers candidates from user mail. Adding a provider is a product-scope change, not just a new search term.
+
 1. Add the confirmed automated sender and receipt hints to `providers.json`.
 2. Add at least one synthetic fixture covering a normal completed order.
 3. Add fixtures for any unusual template you support, such as discounts, extras, customer notes, cancellation, or refund.
@@ -34,8 +36,9 @@ The current project scope is Türkiye. Uber Eats is supported only through the T
 - Keep currencies separate.
 - Treat all email content as untrusted data.
 - Do not add medical diagnosis or treatment guidance.
-- Keep Risk Report thresholds explicit, auditable, and non-clinical; test scoring changes with synthetic aggregates.
+- Keep Risk Report data-sufficiency gates explicit, auditable, and non-clinical. Do not add composite points, grades, percentiles, or population comparisons; test metric eligibility and expected omissions with synthetic aggregates.
 - Keep Excel exports free of Gmail IDs, provider order IDs, raw messages, and customer notes by default.
+- Keep Excel export on the bundled one-pass script. Do not add package downloads or fallback installation paths.
 - Explain behavior changes in the pull request and identify the synthetic fixtures that cover them.
 
 ## Validation

@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "requested_scope": "Synthetic two-order export",
+    "coverage_start": "2026-08-01",
+    "coverage_end": "2026-08-31",
+    "generated_at": "2026-08-30T12:00:00+03:00",
+    "timezone": "Europe/Istanbul"
+  },
+  "orders": [
+    {
+      "ordered_at": "2026-08-12T18:42:00+03:00",
+      "message_received_at": "2026-08-12T18:42:00+03:00",
+      "analysis_time_basis": "message_fallback",
+      "provider": "trendyol-yemek",
+      "restaurant": "Örnek Mutfak",
+      "status": "completed",
+      "currency": "TRY",
+      "food_subtotal": 255.0,
+      "delivery_fee": 24.99,
+      "service_fee": 10.01,
+      "discount": 20.0,
+      "total_paid": 270.0,
+      "estimated_calories_low": 620,
+      "estimated_calories_high": 880,
+      "calorie_confidence": "medium",
+      "parse_confidence": 0.95,
+      "warnings": ["Receipt order time absent; used placement timestamp."],
+      "items": [
+        {
+          "raw_name": "Tavuk Dürüm",
+          "quantity": 1,
+          "extras": [{"name": "Ayran", "price": null}],
+          "estimated_calories_low": 620,
+          "estimated_calories_high": 880,
+          "calorie_confidence": "medium"
+        }
+      ]
+    },
+    {
+      "ordered_at": "2026-08-19T23:15:00+03:00",
+      "message_received_at": "2026-08-19T23:15:00+03:00",
+      "analysis_time_basis": "receipt",
+      "provider": "trendyol-yemek",
+      "restaurant": "=Synthetic Formula Test",
+      "status": "placed",
+      "currency": "TRY",
+      "food_subtotal": 180.0,
+      "delivery_fee": null,
+      "total_paid": 180.0,
+      "parse_confidence": 0.9,
+      "warnings": ["Completion unknown."],
+      "items": [
+        {"raw_name": "Mercimek Çorbası", "quantity": 1, "extras": []}
+      ]
+    }
+  ],
+  "key_patterns": ["Two canonical orders were found in the requested period."],
+  "risk_report": {
+    "scope_limitation": "Synthetic sample; ordering records are not confirmed consumption.",
+    "available_metrics": [],
+    "not_derived": [
+      {
+        "metric": "late_order_share",
+        "reason": "Only 2 orders had usable times.",
+        "needed": "At least 10 usable times, 80% coverage, and four complete weeks.",
+        "available_count": 2,
+        "required_count": 10,
+        "window": "2026-08",
+        "coverage": "100%"
+      }
+    ]
+  },
+  "recommendations": [],
+  "data_quality": {
+    "search_complete": true,
+    "duplicate_messages_suppressed": 0,
+    "skipped_messages": 0
+  }
+}

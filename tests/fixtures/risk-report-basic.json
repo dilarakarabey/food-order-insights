@@ -1,50 +1,43 @@
 {
-  "description": "Synthetic eligible Risk Report aggregate covering 12 complete Monday-through-Sunday weeks without a user budget",
+  "description": "Synthetic Risk Report aggregate covering 12 complete weeks; eligible metrics remain in natural units without a composite score",
   "inputs": {
     "countable_orders": 36,
-    "covered_calendar_weeks": 12,
+    "complete_covered_weeks": 12,
     "high_confidence_countable_orders": 33,
     "orders_with_usable_time": 34,
-    "usable_time_definition": "explicit ordered_at or original placed-message fallback",
+    "placement_message_time_fallbacks": 4,
     "late_hour_orders": 9,
     "orders_with_classifiable_dish": 34,
     "top_three_dish_orders": 19,
+    "top_three_dishes": [
+      {"dish": "Tavuk Dürüm", "orders": 8},
+      {"dish": "Mercimek Çorbası", "orders": 6},
+      {"dish": "Sebzeli Pide", "orders": 5}
+    ],
     "orders_classifiable_by_controlled_vocabulary": 32,
     "balance_vocabulary_version": "1.0.0",
-    "orders_with_balance_opportunity": 16,
+    "orders_with_visible_preparation_signal": 16,
+    "complete_covered_months": 1,
     "monthly_delivery_budget": null
   },
   "expected": {
-    "evidence_gate": "eligible",
-    "usable_order_share": 0.9167,
-    "factors": {
-      "delivery_reliance": {
-        "measure": 3.0,
-        "points": 16,
-        "maximum": 25
-      },
-      "schedule_disruption": {
-        "measure": 0.2647,
-        "points": 14,
-        "maximum": 20
-      },
-      "meal_concentration": {
-        "measure": 0.5588,
-        "points": 14,
-        "maximum": 20
-      },
-      "repeated_balance_opportunities": {
-        "measure": 0.5,
-        "points": 14,
-        "maximum": 20
-      },
-      "user_budget_pressure": {
-        "status": "ineligible_without_user_budget"
-      }
+    "available_metrics": {
+      "orders_per_complete_week": {"numerator": 36, "denominator": 12, "value": 3.0, "unit": "orders/week"},
+      "late_order_share": {"numerator": 9, "denominator": 34, "value": 0.2647, "unit": "share"},
+      "top_three_dish_share": {"numerator": 19, "denominator": 34, "value": 0.5588, "unit": "share"},
+      "receipt_visible_preparation_share": {"numerator": 16, "denominator": 32, "value": 0.5, "unit": "share"}
     },
-    "eligible_points": 58,
-    "eligible_maximum": 85,
-    "score": 68,
-    "label": "Elevated signal"
+    "not_derived": {
+      "average_monthly_net_spend": "fewer_than_two_complete_months",
+      "budget_usage": "no_user_supplied_budget",
+      "trend": "window_level_inputs_not_available"
+    },
+    "forbidden_outputs": [
+      "composite_score",
+      "points",
+      "grade",
+      "percentile",
+      "risk_label"
+    ]
   }
 }

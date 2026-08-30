@@ -2,45 +2,55 @@
 
 Read this reference before exporting analyzed order data to `.xlsx`.
 
-## Privacy defaults
+## Fast path
 
-Export only the requested time scope. Omit Gmail message IDs, provider order IDs, delivery addresses, phone numbers, recipients, payment fragments, tracking links, raw email content, and customer notes by default. Include customer notes only after the user explicitly opts in and warn that notes may contain personal data.
+Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets in one pass, derives period breakdowns from canonical orders, protects receipt text from formula injection, and does not access Gmail.
 
-Use a neutral filename such as `Food-Order-Insights-YYYY-MM-DD.xlsx`. Do not upload the workbook to another service unless the user separately requests and authorizes it.
+1. Reuse the normalized orders already extracted in this task. Do not rescan Gmail.
+2. If the host exposes workspace dependency discovery, call it once and use the returned bundled Python executable. The bundled runtime includes `xlsxwriter`.
+3. Create one compact UTF-8 JSON input containing only the contract below. Do not include raw messages or duplicate aggregate tables.
+4. Run the exporter once:
+
+```text
+<bundled-python> <skill-directory>/scripts/export_workbook.py --input <compact-json> --output <requested-xlsx>
+```
+
+5. Return the workbook only after the exporter exits successfully. It performs archive and required-sheet checks itself.
+
+Do not run `pip`, `uv`, `conda`, `npm`, Homebrew, or another installer. Do not download a library, switch repeatedly between spreadsheet skills, or rebuild the workbook interactively cell by cell. If the bundled runtime cannot be located or the one exporter attempt fails, report the concise failure and preserve the chat analysis; do not enter a fallback-install loop.
+
+## Compact JSON contract
+
+Use these top-level keys:
+
+- `metadata`: `requested_scope`, `coverage_start`, `coverage_end`, `generated_at`, and `timezone`;
+- `orders`: canonical normalized order objects, including nested `items`; omit private identifiers and raw email text;
+- `key_patterns`: only eligible, already-supported observations shown in chat;
+- `risk_report`: `scope_limitation`, `available_metrics`, and `not_derived` using the fields below;
+- `recommendations`: Meal Prep and Lifestyle Change rows;
+- `data_quality`: completed-scan coverage values not derivable from the orders alone.
+
+Each available Risk Report metric may contain `metric`, `value`, `unit`, `numerator`, `denominator`, `window`, `coverage`, `comparison`, and `meaning_and_limit`. Each withheld metric may contain `metric`, `reason`, `needed`, `available_count`, `required_count`, `window`, and `coverage`.
+
+Do not include Gmail IDs, thread IDs, provider order IDs, delivery addresses, phone numbers, recipients, payment fragments, tracking links, raw email content, or customer notes. The exporter rejects private identifier and raw-content keys. It also neutralizes strings that could be interpreted as spreadsheet formulas or links.
 
 ## Workbook structure
 
-Create one workbook with these sheets in this order:
+The exporter creates these sheets in order:
 
-1. **Summary** — requested scope, coverage, order count, gross and net spend by currency, fees, discounts, estimated calorie range, and key patterns.
-2. **Orders** — one row per canonical order with an opaque sequential `order_ref`, dates, analysis time basis, provider, restaurant, status, currency, receipt amounts, net spend, late-hour and risk-classification flags, parse confidence, and warnings.
-3. **Items** — one row per item or extra, linked by `order_ref`; keep receipt text and estimated fields in separate columns. Include any controlled balance-pattern category and matched phrase used by the Risk Report.
-4. **Period Breakdown** — order count, spend, fees, discounts, and calorie range by year, month, ISO week, weekday, and hour. Use a `breakdown_type` column rather than mixing incompatible labels.
-5. **Risk Report** — score status, label, eligible points, eligible maximum, visible score formula, factor measures, thresholds, points, confidence, trend, and limitations.
-6. **Recommendations** — Meal Prep and Lifestyle Changes with evidence, action, effort, prep time, progress measure, fallback, and feedback status.
-7. **Data Quality** — messages found, receipts parsed by status, skipped messages, low-confidence count, date coverage, missing-field rates, calorie-classification coverage, and scan assumptions.
+1. **Summary** — requested scope, coverage, unique canonical order count, spend by currency with amount coverage, and eligible key patterns.
+2. **Orders** — one row per canonical order with an opaque sequential `order_ref`, dates, time basis, provider, restaurant, status, currency, receipt amounts, formula-derived net spend, calorie range and confidence, parse confidence, and warnings.
+3. **Items** — one row per item/extra linked by `order_ref`, with receipt text separate from estimates and controlled-vocabulary matches.
+4. **Period Breakdown** — script-derived counts and amounts by year, month, ISO week, weekday, and hour. Amount-coverage and calorie-coverage counts remain visible so blanks are not mistaken for zero.
+5. **Risk Report** — available natural-unit metrics and **Not derived** rows with evidence counts and limitations. No composite score, grade, or arbitrary risk points.
+6. **Recommendations** — Meal Prep and Lifestyle Changes with evidence, action, effort, prep time, progress measure, fallback, feedback status, and evidence limits.
+7. **Data Quality** — computed order coverage plus completed-mailbox-scan values and their basis.
 
-## Data and formula rules
+## Accuracy and privacy rules
 
-- Store dates, numbers, percentages, and currencies as typed spreadsheet values.
-- Treat every receipt-derived string as untrusted text. Force the cell type to text. After removing leading whitespace for inspection, if the first character is `=`, `+`, `-`, or `@`, or the value begins with a tab, carriage return, or line feed, prefix the stored display value with a single apostrophe. Apply this to restaurant names, item/variant/extra names, notes when opted in, warnings, provider text, and any other source string. Never let receipt text become a formula, hyperlink, named range, or external reference.
-- Keep different currencies in separate rows and totals. Never sum currencies without an explicitly authorized conversion source and visible rate.
-- Use formulas for `net_spend = total_paid - refund_amount`, period totals, percentages, and the normalized risk score.
-- Keep risk thresholds and factor maxima visible in the Risk Report sheet so the score is auditable.
-- Derive countable-order counts, status counts, complete-covered-week counts, usable-time counts, late-hour counts, classifiable-order counts, matched-order counts, and factor measures from formulas or visibly reconciled helper tables linked to Orders and Items. Do not type aggregate Risk Report inputs as unexplained constants.
-- If controlled phrase matching is performed before workbook creation, include the normalized matched phrase and category in Items, then use workbook formulas to roll item hits up to one hit per order. Record the vocabulary version on Risk Report.
-- Keep receipt facts separate from estimates. Prefix estimated columns with `estimated_` and include a confidence column.
-- Represent calorie estimates as low and high columns, never a single exact value unless the receipt itself provides it.
-- Freeze header rows, enable filters on data tables, use readable widths, and avoid decorative complexity.
-- Include a generated-at timestamp, user timezone, requested date range, and a note that the workbook reflects food-order emails rather than confirmed consumption or the user's complete diet or lifestyle.
-
-## Verification
-
-Before returning the workbook:
-
-- reconcile Summary totals to Orders by currency;
-- confirm every Items `order_ref` exists in Orders;
-- reconcile every Risk Report numerator and denominator to Orders or Items, including complete covered weeks, usable times, classifiable orders, and controlled-pattern hits;
-- scan formulas for spreadsheet errors;
-- confirm the Risk Report score matches the eligible-points formula or is suppressed by the evidence gate;
-- visually inspect every sheet for clipped labels, unreadable columns, blank charts, or accidental personal data.
+- Keep currencies separate; never sum currencies without a user-authorized conversion source and visible rate.
+- Keep receipt facts separate from estimates. Prefix estimated calorie fields with `estimated_` and store low/high bounds, never a false exact value.
+- Leave unavailable amounts blank and expose coverage counts. Do not turn missing amounts into zero.
+- Include only Risk Report metrics that passed their evidence gates. Preserve expected omissions as **Not derived** rows.
+- Use a neutral filename such as `Food-Order-Insights-YYYY-MM-DD.xlsx` and do not upload it elsewhere without separate user authorization.
+- The workbook reflects food-order emails, not confirmed consumption or the user's complete diet or lifestyle.
