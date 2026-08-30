@@ -6,8 +6,25 @@
       "display_name": "Trendyol Yemek",
       "locales": ["tr-TR"],
       "confirmed_senders": [
-        "infotrendyolgo@mail.trendyolgo.com"
+        "infotrendyolgo@mail.trendyolgo.com",
+        "infotrendyolgo@trendyolmail.com"
       ],
+      "order_selection": {
+        "policy": "canonical_delivery_only",
+        "canonical_subject_prefixes": [
+          "Yemek Sipariş Teslimi"
+        ],
+        "canonical_status": "completed",
+        "auxiliary_subject_prefixes": [
+          "Yemek Siparişini Aldık",
+          "Uber Eats Trendyol Go E-Arşiv Faturası",
+          "Uber Eats Trendyol Go - Sipariş İptali"
+        ],
+        "dedupe_key_priority": [
+          "provider_order_id",
+          "gmail_thread_id"
+        ]
+      },
       "discovery_terms": [
         "Trendyol Yemek",
         "sipariş",

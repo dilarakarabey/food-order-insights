@@ -30,13 +30,15 @@ Use the user's requested period. If none is given, default to the last 12 months
 
 ### 2. Find receipt senders
 
-For each provider with confirmed senders, run one exact-sender Gmail search per address. Put Gmail operators in the query, for example:
+For each provider with confirmed senders, apply its `order_selection` rule from `providers.json`. Search canonical order messages first. Put Gmail operators in the query, for example:
 
 ```text
-from:infotrendyolgo@mail.trendyolgo.com after:<unix-seconds> -in:spam -in:trash
+from:infotrendyolgo@mail.trendyolgo.com subject:"Yemek Sipariş Teslimi" after:<unix-seconds> -in:spam -in:trash
 ```
 
-Paginate until the requested period is covered or no page remains. Deduplicate by Gmail message ID.
+Paginate until the requested period is covered or no page remains. Deduplicate messages by Gmail message ID, then deduplicate canonical orders using the provider's stated key priority.
+
+For Trendyol Go / Uber Eats Trendyol Go, only a subject beginning with `Yemek Sipariş Teslimi` creates an order. `Yemek Siparişini Aldık` placement messages and `Uber Eats Trendyol Go E-Arşiv Faturası` messages never create orders and never increase order count. Search them only as optional auxiliary messages when the user requests a field—such as total spend—that the delivery email does not contain.
 
 For a provider without a confirmed sender, run only a small discovery search using the provider's brand and receipt subject hints. Inspect at most 20 candidate messages, identify likely automated receipt senders, and ask the user to confirm them before a full historical scan. Do not convert a guessed domain into a broad sender rule.
 
@@ -52,7 +54,11 @@ Do not open tracking links or remote images. Do not read unrelated threads or at
 
 Follow the receipt schema. Preserve visible item, variant, extra, and customer-note text as written. Use `null` for absent values and add warnings for ambiguous values; never invent a price, quantity, date, restaurant, order ID, or note.
 
-Skip marketing emails, login messages, and courier updates without order details. Derive status only from explicit wording: an order-received or order-confirmation email is `placed`, not `completed`. Use `completed` only when the source explicitly indicates delivery or completion. Reconcile later cancellation or refund messages to the original order when a provider order ID or other strong match is available; never count the cancelled order as completed.
+Skip marketing emails, login messages, and courier updates without order details. Apply provider-specific canonical-message rules before generic status rules. Derive status only from explicit wording: an order-received or order-confirmation email is `placed`, not `completed`. Use `completed` only when the canonical source explicitly indicates delivery or completion.
+
+One canonical message produces at most one order. When multiple canonical messages share a provider order ID, keep one order and record the duplicate message IDs in warnings. If the provider order ID is absent, use Gmail thread ID only when the thread clearly belongs to one order; otherwise retain the ambiguity as a warning rather than merging on date, amount, restaurant, or item similarity alone.
+
+An auxiliary placement, invoice, cancellation, or refund message may update an existing canonical order only when its provider order ID exactly matches. It must not replace the canonical `gmail_message_id`, create an order row, or change order count. Preserve the source of enriched fields in warnings. If values conflict, keep the canonical delivery fact, report the conflict, and do not guess. Reconcile cancellation or refund messages to the canonical order when the exact ID matches; never count a cancelled order as completed.
 
 Normalize every monetary field as a non-negative magnitude. In particular, store a displayed `-₺20` discount as `discount: 20`; subtraction is defined by the field, not its sign. `line_total` excludes extras only when extras are separately priced; do not count the same extra twice. `food_subtotal` includes the food items and charged extras. When enough fields exist, validate:
 
@@ -84,7 +90,7 @@ Keep exact receipt facts separate from estimates and inferences.
 - Break down order count and spend by year, month, week, date, weekday, and hour.
 - Separate food subtotal, delivery fee, service fee, small-order fee, tip, discount, and total paid when present.
 - Keep currencies separate unless the user explicitly requests conversion and provides or authorizes a rate source.
-- Show data coverage: messages found, order receipts parsed by status, skipped messages, low-confidence orders, and date range.
+- Show data coverage: canonical order messages, auxiliary messages, unique orders parsed by status, duplicate messages suppressed, skipped messages, low-confidence orders, and date range.
 - Use calorie ranges and confidence, not point estimates presented as fact.
 - Describe unusual delivery-heavy periods, then ask the user whether the context was busy, ill, travel, social, no kitchen, or something else. Never assert illness.
 

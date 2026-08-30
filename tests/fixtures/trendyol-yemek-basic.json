@@ -1,35 +1,63 @@
 {
-  "description": "Synthetic placed Trendyol Yemek order with an extra and customer note",
-  "source_message": {
-    "id": "synthetic-trendyol-001",
-    "from": "infotrendyolgo@mail.trendyolgo.com",
-    "subject": "Siparişin alındı",
-    "email_ts": "2026-08-12T18:42:00+03:00",
-    "body_text": "Restoran: Örnek Mutfak\n1 x Tavuk Dürüm — ₺220,00\nEkstra: Ayran — ₺35,00\nNot: Soğansız lütfen\nAra toplam: ₺255,00\nTeslimat ücreti: ₺24,99\nHizmet bedeli: ₺10,01\nİndirim: -₺20,00\nToplam: ₺270,00"
-  },
+  "description": "Synthetic three-message Trendyol Go order that must produce one canonical delivery order",
+  "source_messages": [
+    {
+      "id": "synthetic-trendyol-placed-001",
+      "from": "infotrendyolgo@mail.trendyolgo.com",
+      "subject": "Yemek Siparişini Aldık 🍔",
+      "email_ts": "2026-08-12T18:42:00+03:00",
+      "body_text": "123456 numaralı yemek siparişini aldık. Restoran: Örnek Mutfak\n1 x Tavuk Dürüm\nEkstra: Ayran\nNot: Soğansız lütfen\nAra toplam: ₺255,00\nTeslimat ücreti: ₺24,99\nHizmet bedeli: ₺10,01\nİndirim: -₺20,00\nToplam: ₺270,00"
+    },
+    {
+      "id": "synthetic-trendyol-delivered-001",
+      "from": "infotrendyolgo@mail.trendyolgo.com",
+      "subject": "Yemek Sipariş Teslimi 🛵",
+      "email_ts": "2026-08-12T19:14:00+03:00",
+      "body_text": "123456 numaralı yemek siparişini teslim ettik. Teslim Edilen Ürünler: Tavuk Dürüm - (Adet: 1), Ayran - (Adet: 1)"
+    },
+    {
+      "id": "synthetic-trendyol-invoice-001",
+      "from": "infotrendyolgo@mail.trendyolgo.com",
+      "subject": "Uber Eats Trendyol Go E-Arşiv Faturası 🍔",
+      "email_ts": "2026-08-12T19:17:00+03:00",
+      "body_text": "123456 nolu siparişine ait teslimat ücretini içeren e-arşiv faturası. Ürün bilgilerini içeren ayrı bir fatura iş ortağı tarafından sağlanacaktır."
+    }
+  ],
+  "expected_canonical_order_count": 1,
+  "expected_counted_message_ids": [
+    "synthetic-trendyol-delivered-001"
+  ],
+  "expected_auxiliary_message_ids": [
+    "synthetic-trendyol-placed-001",
+    "synthetic-trendyol-invoice-001"
+  ],
   "expected_order": {
-    "gmail_message_id": "synthetic-trendyol-001",
+    "gmail_message_id": "synthetic-trendyol-delivered-001",
     "provider": "trendyol-yemek",
-    "provider_order_id": null,
-    "message_received_at": "2026-08-12T18:42:00+03:00",
-    "ordered_at": null,
+    "provider_order_id": "123456",
+    "message_received_at": "2026-08-12T19:14:00+03:00",
+    "ordered_at": "2026-08-12T18:42:00+03:00",
     "restaurant_name": "Örnek Mutfak",
-    "status": "placed",
+    "status": "completed",
     "currency": "TRY",
     "items": [
       {
         "raw_name": "Tavuk Dürüm",
         "quantity": 1,
-        "unit_price": 220.0,
-        "line_total": 220.0,
+        "unit_price": null,
+        "line_total": null,
         "variant": null,
-        "extras": [
-          {
-            "name": "Ayran",
-            "price": 35.0
-          }
-        ],
+        "extras": [],
         "customer_note": "Soğansız lütfen"
+      },
+      {
+        "raw_name": "Ayran",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": null,
+        "variant": null,
+        "extras": [],
+        "customer_note": null
       }
     ],
     "food_subtotal": 255.0,
@@ -42,7 +70,8 @@
     "total_paid": 270.0,
     "confidence": 0.95,
     "warnings": [
-      "Receipt order time absent; used Gmail message timestamp (-0.05)."
+      "Receipt order time absent; used the exact-matched placement message timestamp for analysis (-0.05).",
+      "Order time, restaurant, monetary totals, and customer note enriched from exact matching provider order ID 123456; auxiliary messages did not increase order count."
     ]
   }
 }

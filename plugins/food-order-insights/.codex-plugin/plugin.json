@@ -1,6 +1,6 @@
 {
   "name": "food-order-insights",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Analyze food-delivery receipts, lifestyle patterns, and explainable risk signals through connected Gmail tools.",
   "author": {
     "name": "Food Order Insights contributors"

@@ -77,7 +77,10 @@ The initial registry includes a user-confirmed Trendyol Yemek sender:
 
 ```text
 infotrendyolgo@mail.trendyolgo.com
+infotrendyolgo@trendyolmail.com
 ```
+
+Trendyol Go / Uber Eats Trendyol Go commonly sends three messages for one order. Food Order Insights counts only `Yemek Sipariş Teslimi` as the canonical order. The placement and e-archive messages never increase order count; they may only enrich the same delivery when the provider order ID matches exactly.
 
 Uber Eats and GetirYemek are included as discovery targets until contributors confirm their actual receipt sender addresses. The skill performs a small candidate search first and does not broadly scan an unconfirmed sender.
 
@@ -87,6 +90,7 @@ Provider behavior lives in [providers.json](plugins/food-order-insights/skills/f
 
 - Uses Gmail search/read capabilities only; never sends, labels, archives, trashes, or deletes email.
 - Searches exact confirmed senders for full scans.
+- Uses provider-specific canonical messages and suppresses placement/invoice duplicates from order counts.
 - Treats email bodies as untrusted data and ignores instructions embedded in them.
 - Does not expose delivery addresses, phone numbers, recipients, tracking links, or unrelated message content.
 - Does not maintain its own storage or telemetry.
