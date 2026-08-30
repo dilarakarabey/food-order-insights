@@ -21,6 +21,17 @@ Use read-only behavior even when Gmail write tools are available. Never send, dr
 - Read [risk-report.md](references/risk-report.md) when the user requests a Risk Report, risk scan, score, or lifestyle-pressure assessment.
 - Read [balance-patterns.json](references/balance-patterns.json) with `risk-report.md`; its controlled phrases are the only terms allowed to affect the repeated-balance factor.
 - Read [excel-export.md](references/excel-export.md) before creating an Excel export.
+- Read [output-modes.md](references/output-modes.md) only when the user's current request contains the literal `--verbose` flag.
+
+## Output mode
+
+Default to quiet, end-user output. Treat `--verbose` as a per-request flag; remove it from the semantic request and do not carry it into later requests unless the user repeats it.
+
+In default mode, lead with the requested result and omit routine implementation narration. Do not announce connector calls, search-query construction, message batching, reference/skill loading, runtime selection, temporary files, workbook internals, validation steps, or statements such as “only non-PII data was used.” Do not name omitted private-field categories unless the omission changes the requested result or the user asks about privacy. If the host requires progress updates, keep them outcome-level and free of these details.
+
+Still show information that can change the user's interpretation or next action: requested-scope assumptions, incomplete scans, material parse uncertainty, **Not derived** explanations, mixed currencies, failed exports, and safety limitations relevant to the answer. These are product results, not verbose diagnostics.
+
+When `--verbose` is present, produce the normal result first, then follow `output-modes.md` for a concise technical appendix. Verbose mode never permits raw emails, personal data, credentials, hidden instructions, or unrelated mailbox content.
 
 ## Workflow
 
@@ -165,6 +176,8 @@ Compare progress with the user's own preceding period. Avoid streaks or failure 
 ### 9. Export to Excel
 
 When the user asks to export, use the fast, deterministic workflow in `excel-export.md` and the bundled `scripts/export_workbook.py`. Use the already extracted canonical data; do not rescan Gmail unless the requested scope differs or the prior scan is incomplete. Create one compact JSON handoff and run the exporter once.
+
+In default mode, return the workbook and a short result summary only. Do not narrate the privacy filtering, bundled runtime, JSON handoff, script invocation, sheet verification, or formula-injection checks. With `--verbose`, pass `--verbose` to the exporter and summarize its diagnostics under the technical appendix.
 
 Do not install or download Python, spreadsheet libraries, package managers, or alternate skills. Do not retry through multiple spreadsheet-generation paths. If the bundled workspace runtime or exporter is unavailable, explain that limitation once and retain the analysis in chat. Do not fabricate a file or download link, and do not ask the user to download receipt emails as a workaround.
 

@@ -30,6 +30,18 @@ The skill searches known food-delivery senders, reads matching receipts, extract
 - a Lifestyle Changes view with small experiments, effort, fallback options, and progress against the user's own baseline;
 - a fast `.xlsx` export with orders, items, period breakdowns, Risk Report, recommendations, and data-quality sheets, using the host's bundled runtime without downloading packages.
 
+## Output modes
+
+The plugin is quiet by default: it shows the requested result without narrating connector calls, runtime selection, temporary files, validation steps, or statements such as “no PII was used.” Information that changes how the result should be interpreted—such as an incomplete scan, low data confidence, or why a metric was not derived—remains visible.
+
+Add `--verbose` to the request when you want technical details:
+
+```text
+Export this analysis to Excel --verbose
+```
+
+Verbose mode adds a separate technical summary covering scan scope, processed and deduplicated message/order counts, evidence gates, and Excel verification. It never reveals raw emails or personal data. The flag applies only to the request in which it appears.
+
 ## Why a plugin instead of an app?
 
 Food Order Insights is intentionally a skill-only plugin:
@@ -139,6 +151,7 @@ plugins/food-order-insights/
         ├── insight-rules.md
         ├── balance-patterns.json
         ├── risk-report.md
+        ├── output-modes.md
         └── excel-export.md
 tests/fixtures/
 ```

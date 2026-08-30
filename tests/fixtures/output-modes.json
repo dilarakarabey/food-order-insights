@@ -1,0 +1,43 @@
+{
+  "description": "Quiet-by-default output with explicit per-request verbose diagnostics",
+  "requests": [
+    {
+      "input": "Export this analysis to Excel",
+      "expected_mode": "default",
+      "expected_visible": [
+        "workbook_result",
+        "short_content_summary",
+        "decision_relevant_limitations"
+      ],
+      "expected_hidden": [
+        "non_pii_statement",
+        "connector_calls",
+        "runtime_selection",
+        "temporary_files",
+        "json_handoff",
+        "validation_steps"
+      ]
+    },
+    {
+      "input": "Export this analysis to Excel --verbose",
+      "expected_mode": "verbose",
+      "flag_scope": "current_request_only",
+      "expected_visible": [
+        "workbook_result_first",
+        "technical_details_appendix",
+        "scan_counts",
+        "deduplication_counts",
+        "evidence_gates",
+        "omitted_private_field_categories",
+        "export_verification"
+      ],
+      "always_hidden": [
+        "raw_email",
+        "personal_field_values",
+        "credentials",
+        "hidden_prompts",
+        "chain_of_thought"
+      ]
+    }
+  ]
+}

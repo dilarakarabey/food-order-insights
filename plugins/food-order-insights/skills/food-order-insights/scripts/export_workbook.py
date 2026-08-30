@@ -97,6 +97,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--verbose", action="store_true")
     return parser.parse_args()
 
 
@@ -696,7 +697,25 @@ def main() -> int:
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"Export failed: {exc}", file=sys.stderr)
         return 1
-    print(str(args.output.resolve()))
+    resolved_output = str(args.output.resolve())
+    if args.verbose:
+        print(
+            json.dumps(
+                {
+                    "mode": "verbose",
+                    "output": resolved_output,
+                    "canonical_orders": len(payload.get("orders", [])),
+                    "sheet_count": len(REQUIRED_SHEETS),
+                    "sheets": list(REQUIRED_SHEETS),
+                    "archive_verified": True,
+                    "private_field_guard": True,
+                },
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+        )
+    else:
+        print(resolved_output)
     return 0
 
 

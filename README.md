@@ -30,6 +30,18 @@ Eklenti, yalnızca bilinen yemek siparişi göndericilerini arar, eşleşen e-po
 - küçük deneyler, efor düzeyi, kolaylaştırılmış seçenekler ve kullanıcının kendi geçmişine göre ilerleme içeren Yaşam Tarzı Değişiklikleri görünümü;
 - paket indirmeden, çalışma ortamındaki hazır araçları kullanan; siparişler, ürünler, dönem kırılımları, Risk Raporu, öneriler ve veri kalitesi sayfalarından oluşan hızlı `.xlsx` dışa aktarımı.
 
+## Çıktı modları
+
+Eklenti varsayılan olarak sade çalışır: istenen sonucu gösterir; connector çağrıları, çalışma zamanı seçimi, geçici dosyalar, doğrulama adımları veya “PII kullanılmadı” gibi arka plan ayrıntılarını anlatmaz. Eksik tarama, düşük veri güveni veya bir metriğin neden türetilemediği gibi sonucu yorumlamayı etkileyen bilgiler görünür kalır.
+
+Teknik ayrıntıları görmek istediğiniz komutun sonuna `--verbose` ekleyin:
+
+```text
+Bu analizi Excel'e aktar --verbose
+```
+
+Verbose mod; taranan kapsamı, işlenen ve tekilleştirilen ileti/sipariş sayılarını, veri yeterliliği kontrollerini ve Excel doğrulamasını ayrı bir teknik özet olarak gösterir. Ham e-postaları veya kişisel verileri göstermez. Bayrak yalnızca kullanıldığı komut için geçerlidir.
+
 ## Neden ayrı bir uygulama değil de eklenti?
 
 Food Order Insights bilinçli olarak yalnızca bir beceri içeren eklenti şeklinde tasarlanmıştır:
@@ -139,6 +151,7 @@ plugins/food-order-insights/
         ├── insight-rules.md
         ├── balance-patterns.json
         ├── risk-report.md
+        ├── output-modes.md
         └── excel-export.md
 tests/fixtures/
 ```

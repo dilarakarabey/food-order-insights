@@ -9,7 +9,7 @@ Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets
 1. Reuse the normalized orders already extracted in this task. Do not rescan Gmail.
 2. If the host exposes workspace dependency discovery, call it once and use the returned bundled Python executable. The bundled runtime includes `xlsxwriter`.
 3. Create one compact UTF-8 JSON input containing only the contract below. Do not include raw messages or duplicate aggregate tables.
-4. Run the exporter once:
+4. Run the exporter once. Add the final `--verbose` argument only when the user's current request explicitly contains `--verbose`:
 
 ```text
 <bundled-python> <skill-directory>/scripts/export_workbook.py --input <compact-json> --output <requested-xlsx>
@@ -18,6 +18,12 @@ Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets
 5. Return the workbook only after the exporter exits successfully. It performs archive and required-sheet checks itself.
 
 Do not run `pip`, `uv`, `conda`, `npm`, Homebrew, or another installer. Do not download a library, switch repeatedly between spreadsheet skills, or rebuild the workbook interactively cell by cell. If the bundled runtime cannot be located or the one exporter attempt fails, report the concise failure and preserve the chat analysis; do not enter a fallback-install loop.
+
+## User-facing response
+
+In default mode, return the workbook link/path plus a short summary of what it contains. Do not state that PII was excluded, describe the compact JSON handoff, name the runtime or library, enumerate validation steps, or explain temporary-file handling. These safeguards still apply silently.
+
+With `--verbose`, keep the workbook result first and add the technical appendix defined in `output-modes.md`. Include the exporter's structured diagnostics, omitted private-field categories, and any warning or failure without exposing values from omitted fields.
 
 ## Compact JSON contract
 
