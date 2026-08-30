@@ -15,7 +15,8 @@
         "runtime_selection",
         "temporary_files",
         "json_handoff",
-        "validation_steps"
+        "validation_steps",
+        "cache_checks"
       ]
     },
     {
@@ -27,6 +28,10 @@
         "technical_details_appendix",
         "scan_counts",
         "deduplication_counts",
+        "cache_status",
+        "incremental_scan_boundary",
+        "cache_insert_update_counts",
+        "recent_export_integrity",
         "evidence_gates",
         "omitted_private_field_categories",
         "export_verification"
@@ -34,6 +39,7 @@
       "always_hidden": [
         "raw_email",
         "personal_field_values",
+        "cache_hashes_or_salts",
         "credentials",
         "hidden_prompts",
         "chain_of_thought"

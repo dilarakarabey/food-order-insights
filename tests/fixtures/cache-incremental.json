@@ -1,0 +1,33 @@
+{
+  "scan": {
+    "account_scope": "synthetic-account",
+    "complete": true,
+    "checkpoint_at": "2026-08-31T10:00:00Z",
+    "coverage_start": "2026-08-30T10:00:01Z",
+    "coverage_end": "2026-08-31T10:00:00Z"
+  },
+  "orders": [
+    {
+      "gmail_message_id": "synthetic-refund-message-1",
+      "gmail_thread_id": "synthetic-thread-1",
+      "provider_order_id": "synthetic-provider-order-1",
+      "provider": "trendyol-yemek",
+      "status": "partially_refunded",
+      "refund_amount": 30.0
+    },
+    {
+      "gmail_message_id": "synthetic-message-3",
+      "gmail_thread_id": "synthetic-thread-3",
+      "provider_order_id": "synthetic-provider-order-3",
+      "ordered_at": "2026-08-31T12:15:00+03:00",
+      "message_received_at": "2026-08-31T12:15:00+03:00",
+      "provider": "trendyol-yemek",
+      "status": "placed",
+      "currency": "TRY",
+      "total_paid": 210.0,
+      "items": [
+        {"raw_name": "Sebzeli Pide", "quantity": 1, "extras": []}
+      ]
+    }
+  ]
+}

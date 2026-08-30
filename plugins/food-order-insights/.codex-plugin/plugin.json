@@ -1,7 +1,7 @@
 {
   "name": "food-order-insights",
-  "version": "0.3.2",
-  "description": "Analyze supported Türkiye Uber Eats Trendyol Go receipts with data-gated insights and dependency-free Excel export.",
+  "version": "0.4.0",
+  "description": "Analyze supported Türkiye Uber Eats Trendyol Go receipts with incremental local caching and compact Excel export.",
   "author": {
     "name": "Food Order Insights contributors"
   },
@@ -11,7 +11,7 @@
   "interface": {
     "displayName": "Food Order Insights",
     "shortDescription": "Understand food orders from Gmail receipts.",
-    "longDescription": "Search only confirmed Türkiye Uber Eats Trendyol Go senders in connected Gmail to understand delivery spending, ordering patterns, cautious calorie ranges, meal-prep alternatives, lifestyle-change opportunities, and a data-gated non-medical Risk Report, with quiet-by-default output, optional --verbose diagnostics, standard-library Excel export, and no separate backend.",
+    "longDescription": "Search only confirmed Türkiye Uber Eats Trendyol Go senders in connected Gmail to understand delivery spending, ordering patterns, cautious calorie ranges, meal-prep alternatives, lifestyle-change opportunities, and a data-gated non-medical Risk Report, with quiet-by-default output, an account-scoped local incremental cache, optional --verbose diagnostics, a compact standard-library Excel export, and no separate backend.",
     "developerName": "Food Order Insights contributors",
     "category": "Productivity",
     "capabilities": [],

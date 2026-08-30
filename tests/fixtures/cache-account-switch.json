@@ -1,0 +1,26 @@
+{
+  "scan": {
+    "account_scope": "synthetic-other-account",
+    "complete": true,
+    "full_rescan": true,
+    "checkpoint_at": "2026-08-31T11:00:00Z",
+    "coverage_start": "2025-08-31T00:00:00Z",
+    "coverage_end": "2026-08-31T11:00:00Z"
+  },
+  "orders": [
+    {
+      "gmail_message_id": "synthetic-other-message-1",
+      "gmail_thread_id": "synthetic-other-thread-1",
+      "provider_order_id": "synthetic-other-provider-order-1",
+      "ordered_at": "2026-08-20T19:30:00+03:00",
+      "message_received_at": "2026-08-20T19:30:00+03:00",
+      "provider": "trendyol-yemek",
+      "status": "placed",
+      "currency": "TRY",
+      "total_paid": 150.0,
+      "items": [
+        {"raw_name": "Nohutlu Pilav", "quantity": 1, "extras": []}
+      ]
+    }
+  ]
+}

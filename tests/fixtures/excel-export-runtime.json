@@ -10,18 +10,30 @@
     "third_party_dependencies": 0,
     "archive_valid": true,
     "required_sheets": [
-      "Summary",
       "Orders",
       "Items",
-      "Period Breakdown",
-      "Risk Report",
-      "Recommendations",
       "Data Quality"
+    ],
+    "orders_columns": [
+      "order_ref",
+      "ordered_at",
+      "message_received_at",
+      "provider",
+      "status",
+      "currency",
+      "food_subtotal",
+      "delivery_fee",
+      "discount",
+      "total_paid"
+    ],
+    "items_columns": [
+      "order_ref",
+      "item_name",
+      "quantity"
     ],
     "preserved_features": [
       "typed_dates",
       "typed_numbers",
-      "cached_formulas",
       "cell_styles",
       "column_widths",
       "freeze_panes",

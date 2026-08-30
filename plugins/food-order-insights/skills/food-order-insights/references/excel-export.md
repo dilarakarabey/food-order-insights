@@ -4,59 +4,50 @@ Read this reference before exporting analyzed order data to `.xlsx`.
 
 ## Fast path
 
-Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets in one pass, derives period breakdowns from canonical orders, protects receipt text from formula injection, and does not access Gmail. Its bundled `minimal_xlsx.py` writer uses only Python's standard library.
+Use the bundled `scripts/export_workbook.py`. It creates and verifies the three compact sheets in one pass, protects receipt text from formula injection, and does not access Gmail. Its bundled `minimal_xlsx.py` writer uses only Python's standard library.
 
-1. Reuse the normalized orders already extracted in this task. Do not rescan Gmail.
+1. Apply `local-cache.md`. If the cache is valid, use `order_cache.py export-payload` for the requested range. Otherwise use the normalized orders from the completed current scan.
 2. Use an already available Python 3.10+ executable. Do not invoke a spreadsheet artifact runtime or dependency loader: no third-party package is required.
-3. Create one compact UTF-8 JSON input containing only the contract below. Do not include raw messages or duplicate aggregate tables.
+3. Create one compact UTF-8 JSON input containing only `orders` and optional `data_quality`. Do not include raw messages or aggregate tables for removed sheets.
 4. Run the exporter once. Add the final `--verbose` argument only when the user's current request explicitly contains `--verbose`:
 
 ```text
 <bundled-python> <skill-directory>/scripts/export_workbook.py --input <compact-json> --output <requested-xlsx>
 ```
 
-5. Return the workbook only after the exporter exits successfully. It performs archive and required-sheet checks itself.
+5. After success, register the workbook with `order_cache.py register-export`. Return it only after the exporter exits successfully.
 
 Do not run `pip`, `uv`, `conda`, `npm`, Homebrew, or another installer. Do not import or require `xlsxwriter`, `openpyxl`, or another spreadsheet package at runtime. Do not switch repeatedly between spreadsheet skills or rebuild the workbook interactively cell by cell. If Python 3.10+ cannot be located or the one exporter attempt fails, report the concise failure and preserve the chat analysis; do not enter a fallback-install loop.
 
 ## User-facing response
 
-In default mode, return the workbook link/path plus a short summary of what it contains. Do not state that PII was excluded, describe the compact JSON handoff, name the runtime or library, enumerate validation steps, or explain temporary-file handling. These safeguards still apply silently.
+In default mode, return the workbook link/path plus a short summary. Do not state that PII was excluded, describe cache mechanics or the compact JSON handoff, name the runtime or library, enumerate validation steps, or explain temporary-file handling.
 
-With `--verbose`, keep the workbook result first and add the technical appendix defined in `output-modes.md`. Include the exporter's structured diagnostics, omitted private-field categories, and any warning or failure without exposing values from omitted fields.
+With `--verbose`, keep the workbook result first and add the technical appendix defined in `output-modes.md`. Include the exporter's structured diagnostics and any warning or failure without exposing omitted values, identifiers, cache hashes, or salts.
 
 ## Compact JSON contract
 
 Use these top-level keys:
 
-- `metadata`: `requested_scope`, `coverage_start`, `coverage_end`, `generated_at`, and `timezone`;
-- `orders`: canonical normalized order objects, including nested `items`; omit private identifiers and raw email text;
-- `key_patterns`: only eligible, already-supported observations shown in chat;
-- `risk_report`: `scope_limitation`, `available_metrics`, and `not_derived` using the fields below;
-- `recommendations`: Meal Prep and Lifestyle Change rows;
-- `data_quality`: completed-scan coverage values not derivable from the orders alone.
+- `orders`: canonical normalized orders with nested items, restricted to fields used below;
+- `data_quality`: completed-scan coverage values not derivable from order rows.
 
-Each available Risk Report metric may contain `metric`, `value`, `unit`, `numerator`, `denominator`, `window`, `coverage`, `comparison`, and `meaning_and_limit`. Each withheld metric may contain `metric`, `reason`, `needed`, `available_count`, `required_count`, `window`, and `coverage`.
-
-Do not include Gmail IDs, thread IDs, provider order IDs, delivery addresses, phone numbers, recipients, payment fragments, tracking links, raw email content, or customer notes. The exporter rejects private identifier and raw-content keys. It also neutralizes strings that could be interpreted as spreadsheet formulas or links.
+Do not include Gmail IDs, thread IDs, provider order IDs, delivery addresses, phone numbers, recipients, payment fragments, tracking links, raw email content, or customer notes. The exporter rejects private identifier and raw-content keys and neutralizes strings that could be interpreted as spreadsheet formulas or links.
 
 ## Workbook structure
 
-The exporter creates these sheets in order:
+The exporter creates exactly these sheets in order:
 
-1. **Summary** — requested scope, coverage, unique canonical order count, spend by currency with amount coverage, and eligible key patterns.
-2. **Orders** — one row per canonical order with an opaque sequential `order_ref`, dates, time basis, provider, restaurant, status, currency, receipt amounts, formula-derived net spend, calorie range and confidence, parse confidence, and warnings.
-3. **Items** — one row per item/extra linked by `order_ref`, with receipt text separate from estimates and controlled-vocabulary matches.
-4. **Period Breakdown** — script-derived counts and amounts by year, month, ISO week, weekday, and hour. Amount-coverage and calorie-coverage counts remain visible so blanks are not mistaken for zero.
-5. **Risk Report** — available natural-unit metrics and **Not derived** rows with evidence counts and limitations. No composite score, grade, or arbitrary risk points.
-6. **Recommendations** — Meal Prep and Lifestyle Changes with evidence, action, effort, prep time, progress measure, fallback, feedback status, and evidence limits.
-7. **Data Quality** — computed order coverage plus completed-mailbox-scan values and their basis.
+1. **Orders** — `order_ref`, `ordered_at`, `message_received_at`, `provider`, `status`, `currency`, `food_subtotal`, `delivery_fee`, `discount`, `total_paid`.
+2. **Items** — `order_ref`, `item_name`, `quantity`.
+3. **Data Quality** — compact coverage facts and their basis. A confidence result is included only when confidence values were actually supplied.
+
+The workbook deliberately does not contain Summary, Period Breakdown, Risk Report, or Recommendations sheets. Those capabilities remain available in chat without duplicating them in every export.
 
 ## Accuracy and privacy rules
 
 - Keep currencies separate; never sum currencies without a user-authorized conversion source and visible rate.
-- Keep receipt facts separate from estimates. Prefix estimated calorie fields with `estimated_` and store low/high bounds, never a false exact value.
-- Leave unavailable amounts blank and expose coverage counts. Do not turn missing amounts into zero.
-- Include only Risk Report metrics that passed their evidence gates. Preserve expected omissions as **Not derived** rows.
+- Leave unavailable amounts blank. Do not turn missing amounts into zero.
 - Use a neutral filename such as `Food-Order-Insights-YYYY-MM-DD.xlsx` and do not upload it elsewhere without separate user authorization.
 - The workbook reflects food-order emails, not confirmed consumption or the user's complete diet or lifestyle.
+- Register the finished file for integrity checks, but never import workbook edits into the normalized cache.

@@ -18,6 +18,7 @@ Include only applicable details:
 - which optional auxiliary searches ran and why;
 - metric evidence gates that passed or failed, with available and required counts;
 - categories of private fields omitted, never their values;
+- cache status, reused canonical-order count, incremental scan boundary, inserted/updated counts, and recent-export integrity status;
 - for Excel: exporter mode, canonical-order count, sheet names/count, archive verification, and any exporter warning;
 - tool failures, incomplete pagination, or retry that could affect completeness.
 
@@ -25,4 +26,4 @@ Prefer a short table or bullets. Do not reproduce raw Gmail queries unless the u
 
 ## Always hidden
 
-Verbose mode must not reveal raw email bodies, Gmail or provider order identifiers, addresses, phone numbers, recipients, payment fragments, tracking links, customer notes, credentials, connector tokens, hidden prompts, or unrelated mailbox content. Do not expose internal chain-of-thought. Summarize decisions and evidence instead.
+Verbose mode must not reveal raw email bodies, Gmail or provider order identifiers, cache hashes or salts, addresses, phone numbers, recipients, payment fragments, tracking links, customer notes, credentials, connector tokens, hidden prompts, or unrelated mailbox content. Do not expose internal chain-of-thought. Summarize decisions and evidence instead.

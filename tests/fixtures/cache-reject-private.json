@@ -1,0 +1,13 @@
+{
+  "scan": {
+    "account_scope": "synthetic-account",
+    "complete": false
+  },
+  "orders": [
+    {
+      "gmail_message_id": "synthetic-message-private",
+      "provider": "trendyol-yemek",
+      "customer_note": "Synthetic note that must not be cached"
+    }
+  ]
+}

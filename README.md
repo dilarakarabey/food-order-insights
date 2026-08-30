@@ -2,7 +2,7 @@
 
 **Türkçe** · [English](README.en.md)
 
-Food Order Insights, kullanıcının bağlı Gmail eklentisi üzerinden yemek siparişi e-postalarını analiz eden, Türkiye odaklı ve açık kaynaklı bir ChatGPT/Codex eklentisidir. Kendi sunucusunu çalıştırmaz, e-postaları depolamaz ve kullanıcıdan fiş veya faturalarını indirmesini istemez.
+Food Order Insights, kullanıcının bağlı Gmail eklentisi üzerinden yemek siparişi e-postalarını analiz eden, Türkiye odaklı ve açık kaynaklı bir ChatGPT/Codex eklentisidir. Kendi sunucusunu çalıştırmaz, ham e-postaları depolamaz ve kullanıcıdan fiş veya faturalarını indirmesini istemez. Tekrarlanan taramaları azaltmak için normalize edilmiş sipariş verilerini yalnızca kullanıcının bilgisayarındaki özel bir SQLite önbelleğinde tutabilir.
 
 ## Ne işe yarar?
 
@@ -28,7 +28,7 @@ Eklenti, yalnızca bilinen yemek siparişi göndericilerini arar, eşleşen e-po
 - beğenme/beğenmeme geri bildirimine uyum sağlayan yemek hazırlama fikirleri ve pratik alternatifler;
 - doğal birimlerde metrikler, görünür paydalar ve metriğe özel veri yeterliliği kuralları içeren şeffaf, tıbbi olmayan Sipariş Örüntüsü Risk Raporu;
 - küçük deneyler, efor düzeyi, kolaylaştırılmış seçenekler ve kullanıcının kendi geçmişine göre ilerleme içeren Yaşam Tarzı Değişiklikleri görünümü;
-- üçüncü taraf paket indirmeden, yalnızca Python standart kütüphanesini kullanan; siparişler, ürünler, dönem kırılımları, Risk Raporu, öneriler ve veri kalitesi sayfalarından oluşan hızlı `.xlsx` dışa aktarımı.
+- üçüncü taraf paket indirmeden, yalnızca Python standart kütüphanesini kullanan; `Orders`, `Items` ve `Data Quality` sayfalarından oluşan sade ve hızlı `.xlsx` dışa aktarımı.
 
 ## Çıktı modları
 
@@ -42,6 +42,14 @@ Bu analizi Excel'e aktar --verbose
 
 Verbose mod; taranan kapsamı, işlenen ve tekilleştirilen ileti/sipariş sayılarını, veri yeterliliği kontrollerini ve Excel doğrulamasını ayrı bir teknik özet olarak gösterir. Ham e-postaları veya kişisel verileri göstermez. Bayrak yalnızca kullanıldığı komut için geçerlidir.
 
+## Daha az tarama ve token kullanımı
+
+Tamamlanan ilk taramadan sonra eklenti, normalize edilmiş siparişleri varsayılan olarak `~/.codex/food-order-insights/orders.sqlite3` dosyasında yerel olarak saklar. Sonraki komutlarda bu veri kümesi geçerliyse geçmiş siparişleri yeniden okumaz; yalnızca son tamamlanan taramadan sonra gelen yeni sipariş, iptal ve iade e-postalarını arar ve yerel veriye ekler.
+
+Son 30 gün içinde bir Excel dışa aktarımı oluşturulduysa dosyanın yolunu, boyutunu, değiştirilme zamanını ve özetini kontrol eder. Dosya değişmemişse artımlı tarama devam eder. Dosya değiştirilmiş, taşınmış veya silinmişse güvenli tarafta kalıp istenen dönemi yeniden tarar. Excel'deki kullanıcı değişikliklerini hiçbir zaman sipariş gerçeği olarak içeri almaz; çalışma kitabı yalnızca bütünlük sinyalidir.
+
+Yerel önbellek ham e-posta gövdelerini, Gmail veya sağlayıcı sipariş kimliklerini, adresleri, telefonları, ödeme parçalarını ya da müşteri notlarını saklamaz. Eşleştirme için gereken kimlikler diske yazılmadan önce rastgele tuzla özetlenir. Önbelleği sıfırlamak isteyen kullanıcı yalnızca bu yerel SQLite dosyasını silebilir; sonraki komut tam tarama yaparak yeniden oluşturur.
+
 ## Neden ayrı bir uygulama değil de eklenti?
 
 Food Order Insights bilinçli olarak yalnızca bir beceri içeren eklenti şeklinde tasarlanmıştır:
@@ -53,6 +61,7 @@ Bağlı Gmail eklentisi
 Food Order Insights becerisi
   - doğrulanmış gönderici araması
   - sipariş bilgilerinin çıkarılması
+  - yerel artımlı sipariş önbelleği
   - toplulaştırma
   - temkinli yemek içgörüleri
   - açıklanabilir risk taraması
@@ -62,7 +71,7 @@ Food Order Insights becerisi
 Sohbet yanıtı, görselleştirme veya Excel çalışma kitabı
 ```
 
-Food Order Insights'a ait bir sunucu, hesap sistemi, veritabanı, OAuth istemcisi veya analiz servisi yoktur. Gmail yetkilendirmesi ve model çalıştırma süreci ana üründe kalır. Bu depo yalnızca talimatları, şemaları, sağlayıcı tanımlarını ve sentetik test örneklerini içerir.
+Food Order Insights'a ait bir sunucu, hesap sistemi, bulut veritabanı, OAuth istemcisi veya analiz servisi yoktur. Yalnızca kullanıcının cihazında çalışan yerel SQLite önbelleği vardır. Gmail yetkilendirmesi ve model çalıştırma süreci ana üründe kalır. Bu depo yalnızca talimatları, şemaları, sağlayıcı tanımlarını, yerel yardımcı betikleri ve sentetik test örneklerini içerir.
 
 OpenAI eklenti mimarisi yalnızca beceri içeren eklentileri destekler; proje ileride ihtiyaç duyarsa MCP sunucusu veya özel bir arayüz eklenebilir. Ayrıntılar için [resmî eklenti mimarisi belgesine](https://developers.openai.com/plugins/concepts/plugins) bakabilirsiniz.
 
@@ -70,7 +79,7 @@ OpenAI eklenti mimarisi yalnızca beceri içeren eklentileri destekler; proje il
 
 - Eklenti/beceri desteği sunan bir ChatGPT veya Codex ortamı.
 - E-posta arama ve okuma izniyle kurulmuş ve bağlanmış Gmail eklentisi.
-- Yalnızca `.xlsx` dışa aktarımı için Python 3.10 veya üzeri; `xlsxwriter`, `openpyxl` ya da başka bir üçüncü taraf paket gerekmez.
+- Yerel önbellek ve `.xlsx` dışa aktarımı için Python 3.10 veya üzeri; `xlsxwriter`, `openpyxl` ya da başka bir üçüncü taraf paket gerekmez.
 - OpenAI API anahtarı veya Food Order Insights hesabı gerekmez.
 
 Gmail araçları kullanılamıyorsa eklenti, kullanıcıdan Gmail'i bağlamasını ister. Alternatif olarak fiş veya e-posta dosyası indirmesini talep etmez.
@@ -123,7 +132,10 @@ Sağlayıcı davranışları [providers.json](plugins/food-order-insights/skills
 - Sağlayıcıya özel ana ileti kuralları kullanır; sipariş oluşturma, teslimat ve fatura e-postalarının aynı siparişi birden fazla kez saymasına izin vermez.
 - E-posta gövdelerini güvenilmeyen veri olarak değerlendirir ve içlerine yerleştirilmiş talimatları yok sayar.
 - Teslimat adreslerini, telefon numaralarını, alıcı bilgilerini, takip bağlantılarını veya ilgisiz ileti içeriklerini sonuçlarda göstermez.
-- Kendi depolama veya telemetri sistemini çalıştırmaz.
+- Sunucu veya bulut depolaması ve telemetri çalıştırmaz; normalize edilmiş siparişleri yalnızca cihazdaki kullanıcıya özel SQLite önbelleğinde tutar.
+- Yerel önbelleğe ham e-posta, doğrudan Gmail/sağlayıcı kimliği, teslimat adresi, telefon, ödeme parçası veya müşteri notu yazmaz; eşleştirme kimliklerini tuzlanmış özetlere dönüştürür.
+- SQLite dosyasına uygulama düzeyinde şifreleme eklemez; dosya kullanıcıya özel izinlerle oluşturulur ve cihazın hesap/disk güvenliğine dayanır.
+- Geçerli önbellek varken yalnızca son tamamlanan taramadan sonraki desteklenen iletileri okur; hesap, kapsam veya yakın tarihli dışa aktarım bütünlüğü doğrulanamazsa tam taramaya döner.
 - Kalorileri tahmin olarak tanımlar; aralık ve güven düzeyiyle gösterir.
 - Teşhis veya tıbbi tedavi yerine genel yemek örüntüsü gözlemleri ve yemek fikirleri sunar.
 - Risk Raporu için bileşik puan, not, yüzdelik dilim veya nüfus karşılaştırması üretmez. Uygun metrikleri doğal birimlerinde; pay, payda, dönem ve sınırlamalarıyla raporlar.
@@ -145,7 +157,8 @@ plugins/food-order-insights/
     ├── agents/openai.yaml
     ├── scripts/
     │   ├── export_workbook.py
-    │   └── minimal_xlsx.py
+    │   ├── minimal_xlsx.py
+    │   └── order_cache.py
     └── references/
         ├── providers.json
         ├── receipt-schema.json
@@ -153,6 +166,7 @@ plugins/food-order-insights/
         ├── balance-patterns.json
         ├── risk-report.md
         ├── output-modes.md
+        ├── local-cache.md
         └── excel-export.md
 tests/fixtures/
 ```

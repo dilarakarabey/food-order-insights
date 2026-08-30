@@ -38,7 +38,9 @@ The current project scope is Türkiye. Uber Eats is supported only through the T
 - Do not add medical diagnosis or treatment guidance.
 - Keep Risk Report data-sufficiency gates explicit, auditable, and non-clinical. Do not add composite points, grades, percentiles, or population comparisons; test metric eligibility and expected omissions with synthetic aggregates.
 - Keep Excel exports free of Gmail IDs, provider order IDs, raw messages, and customer notes by default.
+- Keep the local cache free of raw email, direct Gmail/provider identifiers, addresses, phone numbers, payment fragments, tracking links, and customer notes. Preserve its account/scope/export integrity gates and salted identifier matching.
 - Keep Excel export on the bundled one-pass, Python-standard-library writer. Do not add third-party runtime dependencies, package downloads, or fallback installation paths.
+- Keep the Excel workbook contract minimal: Orders, Items, and Data Quality only, with the documented columns and no hidden aggregate sheets.
 - Explain behavior changes in the pull request and identify the synthetic fixtures that cover them.
 
 ## Validation
