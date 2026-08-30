@@ -1,120 +1,122 @@
 # Food Order Insights
 
-An open-source, Türkiye-focused ChatGPT/Codex plugin that analyzes food-delivery receipts through the user's connected Gmail plugin—without running its own backend, storing email, or asking users to download receipts.
+**Türkçe** · [English](README.en.md)
 
-## What it does
+Food Order Insights, kullanıcının bağlı Gmail eklentisi üzerinden yemek siparişi e-postalarını analiz eden, Türkiye odaklı ve açık kaynaklı bir ChatGPT/Codex eklentisidir. Kendi sunucusunu çalıştırmaz, e-postaları depolamaz ve kullanıcıdan fiş veya faturalarını indirmesini istemez.
 
-Ask questions such as:
+## Ne işe yarar?
 
-- “Analyze my food-delivery orders from the last year.”
-- “How much did I spend on delivery fees by month?”
-- “What do I order most often on Sunday evenings?”
-- “Suggest three easy meals based on my common orders.”
-- “Which weeks had unusually heavy delivery use?”
-- “Run my Food Order Risk Report.”
-- “Show my Lifestyle Changes view.”
-- “Export this analysis to Excel.”
+Şuna benzer sorular sorabilirsiniz:
 
-The skill searches known food-delivery senders, reads matching receipts, extracts order details, and produces:
+- “Son bir yıldaki yemek siparişlerimi analiz et.”
+- “Aylara göre teslimat ücretlerine ne kadar harcadım?”
+- “Pazar akşamları en çok ne sipariş ediyorum?”
+- “Sık verdiğim siparişlere göre üç kolay yemek öner.”
+- “Hangi haftalarda teslimata alışılmadık ölçüde yoğun başvurdum?”
+- “Yemek Siparişi Risk Raporumu hazırla.”
+- “Yaşam Tarzı Değişiklikleri görünümünü göster.”
+- “Bu analizi Excel'e aktar.”
 
-- order counts and spending by year, month, week, day, weekday, and hour;
-- restaurant, cuisine, dish, provider, and meal-category patterns;
-- food subtotal, delivery/service fees, discounts, tips, and total paid when present;
-- line items, quantities, variants, extras, and customer notes when present;
-- estimated calorie ranges with visible confidence;
-- delivery-heavy periods that the user can label as busy, ill, travelling, social, no kitchen, or something else;
-- meal-prep ideas and practical alternatives that adapt to accept/dislike feedback;
-- a transparent, non-medical Order Pattern Risk Report with natural-unit metrics, visible denominators, and metric-specific data gates;
-- a Lifestyle Changes view with small experiments, effort, fallback options, and progress against the user's own baseline;
-- a fast `.xlsx` export with orders, items, period breakdowns, Risk Report, recommendations, and data-quality sheets, using the host's bundled runtime without downloading packages.
+Eklenti, yalnızca bilinen yemek siparişi göndericilerini arar, eşleşen e-postaları okur, sipariş ayrıntılarını çıkarır ve şunları sunar:
 
-## Why a plugin instead of an app?
+- yıl, ay, hafta, gün, haftanın günü ve saate göre sipariş sayısı ve harcama;
+- restoran, mutfak, yemek, sağlayıcı ve öğün kategorisi örüntüleri;
+- mevcut olduğunda yemek ara toplamı, teslimat/hizmet ücretleri, indirimler, bahşiş ve ödenen toplam;
+- mevcut olduğunda ürünler, miktarlar, seçenekler, ekstralar ve müşteri notları;
+- güven düzeyi açıkça belirtilen tahmini kalori aralıkları;
+- kullanıcının “yoğundum”, “hastaydım”, “seyahatteydim”, “sosyalleşiyordum”, “mutfağım yoktu” veya başka bir bağlamla etiketleyebileceği teslimat-yoğun dönemler;
+- beğenme/beğenmeme geri bildirimine uyum sağlayan yemek hazırlama fikirleri ve pratik alternatifler;
+- doğal birimlerde metrikler, görünür paydalar ve metriğe özel veri yeterliliği kuralları içeren şeffaf, tıbbi olmayan Sipariş Örüntüsü Risk Raporu;
+- küçük deneyler, efor düzeyi, kolaylaştırılmış seçenekler ve kullanıcının kendi geçmişine göre ilerleme içeren Yaşam Tarzı Değişiklikleri görünümü;
+- paket indirmeden, çalışma ortamındaki hazır araçları kullanan; siparişler, ürünler, dönem kırılımları, Risk Raporu, öneriler ve veri kalitesi sayfalarından oluşan hızlı `.xlsx` dışa aktarımı.
 
-Food Order Insights is intentionally a skill-only plugin:
+## Neden ayrı bir uygulama değil de eklenti?
+
+Food Order Insights bilinçli olarak yalnızca bir beceri içeren eklenti şeklinde tasarlanmıştır:
 
 ```text
-Connected Gmail plugin
+Bağlı Gmail eklentisi
         |
         v
-Food Order Insights skill
-  - exact-sender search
-  - receipt extraction
-  - aggregation
-  - cautious food insights
-  - explainable risk scan
-  - lifestyle experiments
+Food Order Insights becerisi
+  - doğrulanmış gönderici araması
+  - sipariş bilgilerinin çıkarılması
+  - toplulaştırma
+  - temkinli yemek içgörüleri
+  - açıklanabilir risk taraması
+  - yaşam tarzı deneyleri
         |
         v
-Chat response, visualization, or Excel workbook
+Sohbet yanıtı, görselleştirme veya Excel çalışma kitabı
 ```
 
-There is no Food Order Insights server, account system, database, OAuth client, or analytics service. Gmail authorization and model execution stay with the host product. The repository contains only instructions, schemas, provider definitions, and synthetic test fixtures.
+Food Order Insights'a ait bir sunucu, hesap sistemi, veritabanı, OAuth istemcisi veya analiz servisi yoktur. Gmail yetkilendirmesi ve model çalıştırma süreci ana üründe kalır. Bu depo yalnızca talimatları, şemaları, sağlayıcı tanımlarını ve sentetik test örneklerini içerir.
 
-OpenAI's plugin architecture supports skill-only plugins and allows an MCP server or custom UI to be added later if the project ever needs one. See the [official plugin architecture documentation](https://developers.openai.com/plugins/concepts/plugins).
+OpenAI eklenti mimarisi yalnızca beceri içeren eklentileri destekler; proje ileride ihtiyaç duyarsa MCP sunucusu veya özel bir arayüz eklenebilir. Ayrıntılar için [resmî eklenti mimarisi belgesine](https://developers.openai.com/plugins/concepts/plugins) bakabilirsiniz.
 
-## Requirements
+## Gereksinimler
 
-- A ChatGPT or Codex surface that supports plugins/skills.
-- The Gmail plugin installed and connected with permission to search and read mail.
-- A Codex host with bundled workspace Python is required only for the optimized `.xlsx` export; the plugin never installs Python packages.
-- No OpenAI API key and no Food Order Insights account.
+- Eklenti/beceri desteği sunan bir ChatGPT veya Codex ortamı.
+- E-posta arama ve okuma izniyle kurulmuş ve bağlanmış Gmail eklentisi.
+- Yalnızca optimize edilmiş `.xlsx` dışa aktarımı için hazır çalışma alanı Python'u içeren bir Codex ortamı; eklenti Python paketi kurmaz.
+- OpenAI API anahtarı veya Food Order Insights hesabı gerekmez.
 
-If Gmail tools are unavailable, the skill asks the user to connect Gmail. It does not fall back to requesting downloaded receipt files.
+Gmail araçları kullanılamıyorsa eklenti, kullanıcıdan Gmail'i bağlamasını ister. Alternatif olarak fiş veya e-posta dosyası indirmesini talep etmez.
 
-## Install for local development
+## Yerel geliştirme için kurulum
 
-Until the plugin is published in the universal plugin directory, clone this repository and add it as a repository marketplace:
+Eklenti evrensel eklenti dizininde yayımlanana kadar bu depoyu klonlayın ve depo tabanlı bir marketplace olarak ekleyin:
 
 ```bash
-codex plugin marketplace add /absolute/path/to/food-order-insights
+codex plugin marketplace add /food-order-insights/deposunun/mutlak/yolu
 ```
 
-Then install **Food Order Insights** and ensure the separate Gmail plugin is connected.
+Ardından **Food Order Insights** eklentisini kurun ve ayrı Gmail eklentisinin bağlı olduğundan emin olun.
 
-## Current provider coverage
+## Güncel sağlayıcı kapsamı
 
-The initial registry includes user-confirmed Türkiye senders used by Trendyol Go / Uber Eats Trendyol Go:
+Başlangıç kayıt defteri, Trendyol Go / Uber Eats Trendyol Go tarafından Türkiye'de kullanılan ve kullanıcı tarafından doğrulanmış şu göndericileri içerir:
 
 ```text
 infotrendyolgo@mail.trendyolgo.com
 infotrendyolgo@trendyolmail.com
 ```
 
-Trendyol Go / Uber Eats Trendyol Go commonly sends several messages for one order, but platform delivery messages are not sent for every restaurant-courier order. Food Order Insights therefore counts only `Yemek Siparişini Aldık` as the canonical order. Delivery, e-archive, cancellation, and refund messages never increase order count; they may only enrich or update a matching placement. A missing delivery email means completion is unknown, not that the order did not happen.
+Trendyol Go / Uber Eats Trendyol Go tek bir sipariş için çoğu zaman birden fazla e-posta gönderir. Ancak restoranın kendi kuryesiyle teslim edilen her sipariş için platform teslimat e-postası gelmez. Bu nedenle Food Order Insights yalnızca konusu `Yemek Siparişini Aldık` ile başlayan e-postayı ana sipariş kaydı olarak sayar. Teslimat, e-arşiv, iptal ve iade e-postaları sipariş sayısını artırmaz; yalnızca eşleşen siparişi zenginleştirebilir veya güncelleyebilir. Teslimat e-postasının bulunmaması, siparişin gerçekleşmediği değil, tamamlanma durumunun bilinmediği anlamına gelir.
 
-GetirYemek is not searched, discovered, or included. The current scan scope is deliberately limited to the two confirmed senders above.
+GetirYemek aranmaz, keşfedilmez ve analize dahil edilmez. Güncel tarama kapsamı bilinçli olarak yukarıdaki iki doğrulanmış göndericiyle sınırlıdır.
 
-### Why Uber Eats support is Türkiye-only
+### Uber Eats desteği neden yalnızca Türkiye ile sınırlı?
 
-The supported Turkish service is Uber Eats Trendyol Go, including its former Trendyol Go branding. Its `Yemek Siparişini Aldık` email contains the ordered food names and quantities needed for analysis.
+Desteklenen Türkiye hizmeti, eski Trendyol Go markasını da kapsayan Uber Eats Trendyol Go'dur. Bu hizmetin `Yemek Siparişini Aldık` e-postası analiz için gereken yemek adlarını ve miktarlarını içerir.
 
-International Uber Eats receipts use different templates. In the tested German format, messages from `noreply@uber.com` contain the restaurant, total, and a link to the full receipt, but not the ordered food items in the email body. Following receipt links would expand the product's access and privacy surface, so Food Order Insights does not do that. It excludes `noreply@uber.com` before reading message bodies and does not include international Uber Eats orders in counts, spending, recommendations, the Risk Report, or Excel exports.
+Diğer ülkelerdeki Uber Eats e-postaları farklı şablonlar kullanır. Test edilen Almanya şablonunda `noreply@uber.com` adresinden gelen iletiler restoranı, toplam tutarı ve ayrıntılı fiş bağlantısını içerirken sipariş edilen yemekleri e-posta gövdesinde listelemez. Fiş bağlantılarını takip etmek ürünün erişim ve gizlilik kapsamını genişleteceği için Food Order Insights bunu yapmaz. `noreply@uber.com` göndericisini ileti gövdelerini okumadan önce dışlar; diğer ülkelerdeki Uber Eats siparişlerini sayılara, harcamalara, önerilere, Risk Raporuna veya Excel dışa aktarımına dahil etmez.
 
-This is an intentional product boundary, not a claim that every country uses the same Uber template. International formats can differ, but they are outside this project's current Türkiye-only scope.
+Bu, her ülkede aynı Uber şablonunun kullanıldığı iddiası değil, bilinçli bir ürün sınırıdır. Uluslararası şablonlar farklılık gösterebilir; ancak projenin güncel Türkiye kapsamının dışındadır.
 
-Provider behavior lives in [providers.json](plugins/food-order-insights/skills/food-order-insights/references/providers.json). Contributions should add verified sender addresses and synthetic fixtures rather than real emails.
+Sağlayıcı davranışları [providers.json](plugins/food-order-insights/skills/food-order-insights/references/providers.json) dosyasında tanımlanır. Katkılar gerçek e-postalar yerine doğrulanmış gönderici adresleri ve sentetik test örnekleri eklemelidir.
 
-## Privacy and safety
+## Gizlilik ve güvenlik
 
-- Uses Gmail search/read capabilities only; never sends, labels, archives, trashes, or deletes email.
-- Searches exact confirmed senders for full scans.
-- Never runs discovery searches for GetirYemek or another unsupported provider.
-- Excludes international Uber Eats senders such as `noreply@uber.com` before reading message bodies.
-- Uses provider-specific canonical messages and suppresses placement/invoice duplicates from order counts.
-- Treats email bodies as untrusted data and ignores instructions embedded in them.
-- Does not expose delivery addresses, phone numbers, recipients, tracking links, or unrelated message content.
-- Does not maintain its own storage or telemetry.
-- Describes calories as estimates and gives ranges with confidence.
-- Provides general food-pattern observations and meal ideas, not diagnosis or medical treatment.
-- Does not create a composite Risk Report score, grade, percentile, or population comparison. It reports eligible metrics in natural units with numerators, denominators, windows, and limitations.
-- Applies a separate minimum sample and coverage gate to each inferred metric. Expected metrics that cannot be supported appear as **Not derived**, with the exact reason and what would make them available.
-- Omits Gmail IDs, order IDs, raw email text, and customer notes from Excel by default.
-- Uses a one-pass bundled Excel exporter; it does not download libraries or retry through multiple spreadsheet toolchains.
-- Never infers that a user was ill; it asks the user to label unusual periods.
+- Gmail'in yalnızca arama/okuma özelliklerini kullanır; e-posta göndermez, etiketlemez, arşivlemez, çöpe taşımaz veya silmez.
+- Tam taramalarda yalnızca doğrulanmış gönderici adreslerini arar.
+- GetirYemek veya desteklenmeyen başka bir sağlayıcı için keşif araması yapmaz.
+- `noreply@uber.com` gibi uluslararası Uber Eats göndericilerini ileti gövdelerini okumadan önce dışlar.
+- Sağlayıcıya özel ana ileti kuralları kullanır; sipariş oluşturma, teslimat ve fatura e-postalarının aynı siparişi birden fazla kez saymasına izin vermez.
+- E-posta gövdelerini güvenilmeyen veri olarak değerlendirir ve içlerine yerleştirilmiş talimatları yok sayar.
+- Teslimat adreslerini, telefon numaralarını, alıcı bilgilerini, takip bağlantılarını veya ilgisiz ileti içeriklerini sonuçlarda göstermez.
+- Kendi depolama veya telemetri sistemini çalıştırmaz.
+- Kalorileri tahmin olarak tanımlar; aralık ve güven düzeyiyle gösterir.
+- Teşhis veya tıbbi tedavi yerine genel yemek örüntüsü gözlemleri ve yemek fikirleri sunar.
+- Risk Raporu için bileşik puan, not, yüzdelik dilim veya nüfus karşılaştırması üretmez. Uygun metrikleri doğal birimlerinde; pay, payda, dönem ve sınırlamalarıyla raporlar.
+- Her çıkarımsal metriğe ayrı örneklem ve kapsama alt sınırı uygular. Desteklenemeyen ancak beklenmesi muhtemel metrikleri **Türetilmedi** şeklinde; kesin nedeni ve kullanılabilir olması için gerekenlerle birlikte gösterir.
+- Gmail kimliklerini, sipariş kimliklerini, ham e-posta metnini ve müşteri notlarını varsayılan olarak Excel'e dahil etmez.
+- Tek geçişli hazır Excel dışa aktarıcısını kullanır; kütüphane indirmez veya birden fazla elektronik tablo araç zincirini sırayla denemez.
+- Kullanıcının hasta olduğunu varsaymaz; olağandışı dönemlerin bağlamını kullanıcıya sorar.
 
-The host product's own data controls and connector policies still apply. This project cannot change or replace them.
+Ana ürünün kendi veri denetimleri ve bağlayıcı politikaları geçerliliğini korur. Bu proje onları değiştiremez veya onların yerini alamaz.
 
-## Repository structure
+## Depo yapısı
 
 ```text
 .agents/plugins/marketplace.json
@@ -135,19 +137,19 @@ plugins/food-order-insights/
 tests/fixtures/
 ```
 
-## Roadmap
+## Yol haritası
 
-- Validate cross-plugin Gmail access on public ChatGPT and Codex surfaces.
-- Revisit additional Türkiye providers only after an explicit scope decision, confirmed senders, and item-complete synthetic fixtures.
-- Add robust synthetic evaluation fixtures for discounts, extras, notes, refunds, and multiple currencies.
-- Improve in-conversation charts, literal interactive tabs, and feedback continuity.
-- Package the same schema and analysis rules for Gemini where its extension model permits.
-- Consider an optional MCP UI only if native chat visualizations are insufficient.
+- Herkese açık ChatGPT ve Codex ortamlarında eklentiler arası Gmail erişimini doğrulamak.
+- Ek Türkiye sağlayıcılarını yalnızca açık bir kapsam kararı, doğrulanmış göndericiler ve ürün içeriklerini tam olarak temsil eden sentetik örneklerden sonra yeniden değerlendirmek.
+- İndirimler, ekstralar, notlar, iadeler ve birden fazla para birimi için daha güçlü sentetik değerlendirme örnekleri eklemek.
+- Sohbet içi grafikleri, gerçek etkileşimli sekmeleri ve geri bildirim sürekliliğini geliştirmek.
+- Gemini'nin uzantı modelinin izin verdiği ölçüde aynı şema ve analiz kurallarını Gemini için paketlemek.
+- Yerel sohbet görselleştirmeleri yetersiz kalırsa isteğe bağlı bir MCP arayüzünü değerlendirmek.
 
-## Contributing
+## Katkıda bulunma
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Never submit a real receipt, email address belonging to a person, delivery address, phone number, order ID, or authentication token.
+Ayrıntılar için [CONTRIBUTING.md](CONTRIBUTING.md) dosyasına bakın. Gerçek bir fişi, bir kişiye ait e-posta adresini, teslimat adresini, telefon numarasını, sipariş kimliğini veya kimlik doğrulama anahtarını hiçbir zaman göndermeyin.
 
-## License
+## Lisans
 
 [MIT](LICENSE)
