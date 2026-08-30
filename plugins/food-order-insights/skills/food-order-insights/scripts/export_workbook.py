@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Create the Food Order Insights workbook from one compact JSON file.
 
-This exporter intentionally uses the host's bundled xlsxwriter package. It never
-installs dependencies and never reads Gmail or raw email files.
+This exporter uses only Python's standard library and the bundled minimal OOXML
+writer. It never installs dependencies and never reads Gmail or raw email files.
 """
 
 from __future__ import annotations
@@ -17,14 +17,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-try:
-    import xlsxwriter
-    from xlsxwriter.utility import xl_rowcol_to_cell
-except ImportError as exc:  # pragma: no cover - exercised by host availability
-    raise SystemExit(
-        "xlsxwriter is not available in this runtime. Use the host's bundled "
-        "workspace Python; do not install packages."
-    ) from exc
+from minimal_xlsx import Workbook, xl_rowcol_to_cell
 
 
 REQUIRED_SHEETS = (
@@ -158,7 +151,7 @@ def parse_datetime(value: Any) -> datetime | None:
     return parsed.replace(tzinfo=None)
 
 
-def formats(workbook: xlsxwriter.Workbook) -> dict[str, Any]:
+def formats(workbook: Workbook) -> dict[str, Any]:
     return {
         "title": workbook.add_format(
             {"bold": True, "font_size": 16, "font_color": "#17324D"}
@@ -234,7 +227,7 @@ def normalize_orders(payload: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def write_orders(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     orders: list[dict[str, Any]],
     fmts: dict[str, Any],
 ) -> None:
@@ -313,7 +306,7 @@ def flatten_items(orders: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def write_items(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     orders: list[dict[str, Any]],
     payload: dict[str, Any],
     fmts: dict[str, Any],
@@ -406,7 +399,7 @@ def derive_breakdowns(orders: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 def write_breakdowns(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     orders: list[dict[str, Any]],
     fmts: dict[str, Any],
 ) -> None:
@@ -447,7 +440,7 @@ def write_breakdowns(
 
 
 def write_summary(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     payload: dict[str, Any],
     orders: list[dict[str, Any]],
     fmts: dict[str, Any],
@@ -504,7 +497,7 @@ def write_summary(
 
 
 def write_risk_report(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     payload: dict[str, Any],
     fmts: dict[str, Any],
 ) -> None:
@@ -578,7 +571,7 @@ def write_risk_report(
 
 
 def write_recommendations(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     payload: dict[str, Any],
     fmts: dict[str, Any],
 ) -> None:
@@ -608,7 +601,7 @@ def write_recommendations(
 
 
 def write_data_quality(
-    workbook: xlsxwriter.Workbook,
+    workbook: Workbook,
     payload: dict[str, Any],
     orders: list[dict[str, Any]],
     fmts: dict[str, Any],
@@ -647,7 +640,7 @@ def write_data_quality(
 
 def build_workbook(payload: dict[str, Any], output: Path) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
-    workbook = xlsxwriter.Workbook(
+    workbook = Workbook(
         output,
         {
             "constant_memory": True,
@@ -704,6 +697,8 @@ def main() -> int:
                 {
                     "mode": "verbose",
                     "output": resolved_output,
+                    "writer": "stdlib-ooxml",
+                    "third_party_dependencies": 0,
                     "canonical_orders": len(payload.get("orders", [])),
                     "sheet_count": len(REQUIRED_SHEETS),
                     "sheets": list(REQUIRED_SHEETS),

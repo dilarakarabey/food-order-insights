@@ -28,7 +28,7 @@ The skill searches known food-delivery senders, reads matching receipts, extract
 - meal-prep ideas and practical alternatives that adapt to accept/dislike feedback;
 - a transparent, non-medical Order Pattern Risk Report with natural-unit metrics, visible denominators, and metric-specific data gates;
 - a Lifestyle Changes view with small experiments, effort, fallback options, and progress against the user's own baseline;
-- a fast `.xlsx` export with orders, items, period breakdowns, Risk Report, recommendations, and data-quality sheets, using the host's bundled runtime without downloading packages.
+- a fast `.xlsx` export with orders, items, period breakdowns, Risk Report, recommendations, and data-quality sheets, using only Python's standard library and downloading no third-party packages.
 
 ## Output modes
 
@@ -70,7 +70,7 @@ OpenAI's plugin architecture supports skill-only plugins and allows an MCP serve
 
 - A ChatGPT or Codex surface that supports plugins/skills.
 - The Gmail plugin installed and connected with permission to search and read mail.
-- A Codex host with bundled workspace Python is required only for the optimized `.xlsx` export; the plugin never installs Python packages.
+- Python 3.10 or newer is required only for `.xlsx` export; `xlsxwriter`, `openpyxl`, and other third-party packages are not required.
 - No OpenAI API key and no Food Order Insights account.
 
 If Gmail tools are unavailable, the skill asks the user to connect Gmail. It does not fall back to requesting downloaded receipt files.
@@ -129,7 +129,7 @@ Provider behavior lives in [providers.json](plugins/food-order-insights/skills/f
 - Does not create a composite Risk Report score, grade, percentile, or population comparison. It reports eligible metrics in natural units with numerators, denominators, windows, and limitations.
 - Applies a separate minimum sample and coverage gate to each inferred metric. Expected metrics that cannot be supported appear as **Not derived**, with the exact reason and what would make them available.
 - Omits Gmail IDs, order IDs, raw email text, and customer notes from Excel by default.
-- Uses a one-pass bundled Excel exporter; it does not download libraries or retry through multiple spreadsheet toolchains.
+- Uses a one-pass, Python-standard-library Excel exporter; it does not download libraries or retry through multiple spreadsheet toolchains.
 - Never infers that a user was ill; it asks the user to label unusual periods.
 
 The host product's own data controls and connector policies still apply. This project cannot change or replace them.
@@ -144,7 +144,8 @@ plugins/food-order-insights/
     ├── SKILL.md
     ├── agents/openai.yaml
     ├── scripts/
-    │   └── export_workbook.py
+    │   ├── export_workbook.py
+    │   └── minimal_xlsx.py
     └── references/
         ├── providers.json
         ├── receipt-schema.json

@@ -1,0 +1,42 @@
+{
+  "description": "Excel export must succeed with Python site-packages disabled and no spreadsheet library installed",
+  "test_mode": {
+    "python_flag": "-S",
+    "meaning": "Do not import site-packages"
+  },
+  "expected": {
+    "exit_code": 0,
+    "writer": "stdlib-ooxml",
+    "third_party_dependencies": 0,
+    "archive_valid": true,
+    "required_sheets": [
+      "Summary",
+      "Orders",
+      "Items",
+      "Period Breakdown",
+      "Risk Report",
+      "Recommendations",
+      "Data Quality"
+    ],
+    "preserved_features": [
+      "typed_dates",
+      "typed_numbers",
+      "cached_formulas",
+      "cell_styles",
+      "column_widths",
+      "freeze_panes",
+      "filters",
+      "formula_injection_guard",
+      "quiet_mode",
+      "verbose_mode"
+    ]
+  },
+  "forbidden_runtime_actions": [
+    "import_xlsxwriter",
+    "import_openpyxl",
+    "dependency_loader",
+    "package_install",
+    "network_download",
+    "alternate_spreadsheet_skill"
+  ]
+}

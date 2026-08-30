@@ -4,10 +4,10 @@ Read this reference before exporting analyzed order data to `.xlsx`.
 
 ## Fast path
 
-Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets in one pass, derives period breakdowns from canonical orders, protects receipt text from formula injection, and does not access Gmail.
+Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets in one pass, derives period breakdowns from canonical orders, protects receipt text from formula injection, and does not access Gmail. Its bundled `minimal_xlsx.py` writer uses only Python's standard library.
 
 1. Reuse the normalized orders already extracted in this task. Do not rescan Gmail.
-2. If the host exposes workspace dependency discovery, call it once and use the returned bundled Python executable. The bundled runtime includes `xlsxwriter`.
+2. Use an already available Python 3.10+ executable. Do not invoke a spreadsheet artifact runtime or dependency loader: no third-party package is required.
 3. Create one compact UTF-8 JSON input containing only the contract below. Do not include raw messages or duplicate aggregate tables.
 4. Run the exporter once. Add the final `--verbose` argument only when the user's current request explicitly contains `--verbose`:
 
@@ -17,7 +17,7 @@ Use the bundled `scripts/export_workbook.py`. It creates and verifies all sheets
 
 5. Return the workbook only after the exporter exits successfully. It performs archive and required-sheet checks itself.
 
-Do not run `pip`, `uv`, `conda`, `npm`, Homebrew, or another installer. Do not download a library, switch repeatedly between spreadsheet skills, or rebuild the workbook interactively cell by cell. If the bundled runtime cannot be located or the one exporter attempt fails, report the concise failure and preserve the chat analysis; do not enter a fallback-install loop.
+Do not run `pip`, `uv`, `conda`, `npm`, Homebrew, or another installer. Do not import or require `xlsxwriter`, `openpyxl`, or another spreadsheet package at runtime. Do not switch repeatedly between spreadsheet skills or rebuild the workbook interactively cell by cell. If Python 3.10+ cannot be located or the one exporter attempt fails, report the concise failure and preserve the chat analysis; do not enter a fallback-install loop.
 
 ## User-facing response
 

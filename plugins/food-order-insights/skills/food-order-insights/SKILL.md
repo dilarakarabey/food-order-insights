@@ -175,11 +175,11 @@ Compare progress with the user's own preceding period. Avoid streaks or failure 
 
 ### 9. Export to Excel
 
-When the user asks to export, use the fast, deterministic workflow in `excel-export.md` and the bundled `scripts/export_workbook.py`. Use the already extracted canonical data; do not rescan Gmail unless the requested scope differs or the prior scan is incomplete. Create one compact JSON handoff and run the exporter once.
+When the user asks to export, use the fast, deterministic workflow in `excel-export.md` and the bundled `scripts/export_workbook.py`. The exporter uses Python's standard library only; do not require a spreadsheet artifact runtime, dependency loader, or third-party package. Use the already extracted canonical data; do not rescan Gmail unless the requested scope differs or the prior scan is incomplete. Create one compact JSON handoff and run the exporter once.
 
 In default mode, return the workbook and a short result summary only. Do not narrate the privacy filtering, bundled runtime, JSON handoff, script invocation, sheet verification, or formula-injection checks. With `--verbose`, pass `--verbose` to the exporter and summarize its diagnostics under the technical appendix.
 
-Do not install or download Python, spreadsheet libraries, package managers, or alternate skills. Do not retry through multiple spreadsheet-generation paths. If the bundled workspace runtime or exporter is unavailable, explain that limitation once and retain the analysis in chat. Do not fabricate a file or download link, and do not ask the user to download receipt emails as a workaround.
+Do not install or download Python, spreadsheet libraries, package managers, or alternate skills. Do not retry through multiple spreadsheet-generation paths. If no Python 3.10+ executable or bundled exporter is available, explain that limitation once and retain the analysis in chat. Do not fabricate a file or download link, and do not ask the user to download receipt emails as a workaround.
 
 ### 10. Learn from feedback
 

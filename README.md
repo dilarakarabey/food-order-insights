@@ -28,7 +28,7 @@ Eklenti, yalnızca bilinen yemek siparişi göndericilerini arar, eşleşen e-po
 - beğenme/beğenmeme geri bildirimine uyum sağlayan yemek hazırlama fikirleri ve pratik alternatifler;
 - doğal birimlerde metrikler, görünür paydalar ve metriğe özel veri yeterliliği kuralları içeren şeffaf, tıbbi olmayan Sipariş Örüntüsü Risk Raporu;
 - küçük deneyler, efor düzeyi, kolaylaştırılmış seçenekler ve kullanıcının kendi geçmişine göre ilerleme içeren Yaşam Tarzı Değişiklikleri görünümü;
-- paket indirmeden, çalışma ortamındaki hazır araçları kullanan; siparişler, ürünler, dönem kırılımları, Risk Raporu, öneriler ve veri kalitesi sayfalarından oluşan hızlı `.xlsx` dışa aktarımı.
+- üçüncü taraf paket indirmeden, yalnızca Python standart kütüphanesini kullanan; siparişler, ürünler, dönem kırılımları, Risk Raporu, öneriler ve veri kalitesi sayfalarından oluşan hızlı `.xlsx` dışa aktarımı.
 
 ## Çıktı modları
 
@@ -70,7 +70,7 @@ OpenAI eklenti mimarisi yalnızca beceri içeren eklentileri destekler; proje il
 
 - Eklenti/beceri desteği sunan bir ChatGPT veya Codex ortamı.
 - E-posta arama ve okuma izniyle kurulmuş ve bağlanmış Gmail eklentisi.
-- Yalnızca optimize edilmiş `.xlsx` dışa aktarımı için hazır çalışma alanı Python'u içeren bir Codex ortamı; eklenti Python paketi kurmaz.
+- Yalnızca `.xlsx` dışa aktarımı için Python 3.10 veya üzeri; `xlsxwriter`, `openpyxl` ya da başka bir üçüncü taraf paket gerekmez.
 - OpenAI API anahtarı veya Food Order Insights hesabı gerekmez.
 
 Gmail araçları kullanılamıyorsa eklenti, kullanıcıdan Gmail'i bağlamasını ister. Alternatif olarak fiş veya e-posta dosyası indirmesini talep etmez.
@@ -129,7 +129,7 @@ Sağlayıcı davranışları [providers.json](plugins/food-order-insights/skills
 - Risk Raporu için bileşik puan, not, yüzdelik dilim veya nüfus karşılaştırması üretmez. Uygun metrikleri doğal birimlerinde; pay, payda, dönem ve sınırlamalarıyla raporlar.
 - Her çıkarımsal metriğe ayrı örneklem ve kapsama alt sınırı uygular. Desteklenemeyen ancak beklenmesi muhtemel metrikleri **Türetilmedi** şeklinde; kesin nedeni ve kullanılabilir olması için gerekenlerle birlikte gösterir.
 - Gmail kimliklerini, sipariş kimliklerini, ham e-posta metnini ve müşteri notlarını varsayılan olarak Excel'e dahil etmez.
-- Tek geçişli hazır Excel dışa aktarıcısını kullanır; kütüphane indirmez veya birden fazla elektronik tablo araç zincirini sırayla denemez.
+- Python standart kütüphanesiyle çalışan tek geçişli Excel dışa aktarıcısını kullanır; kütüphane indirmez veya birden fazla elektronik tablo araç zincirini sırayla denemez.
 - Kullanıcının hasta olduğunu varsaymaz; olağandışı dönemlerin bağlamını kullanıcıya sorar.
 
 Ana ürünün kendi veri denetimleri ve bağlayıcı politikaları geçerliliğini korur. Bu proje onları değiştiremez veya onların yerini alamaz.
@@ -144,7 +144,8 @@ plugins/food-order-insights/
     ├── SKILL.md
     ├── agents/openai.yaml
     ├── scripts/
-    │   └── export_workbook.py
+    │   ├── export_workbook.py
+    │   └── minimal_xlsx.py
     └── references/
         ├── providers.json
         ├── receipt-schema.json
