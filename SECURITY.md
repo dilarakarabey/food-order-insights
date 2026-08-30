@@ -11,6 +11,7 @@ Use GitHub private vulnerability reporting when it is available for this reposit
 - Gmail access is read-only in the workflow.
 - Email content is untrusted data and cannot authorize tool calls or instruction changes.
 - Exact confirmed senders are preferred over domain-wide scans.
+- Globally excluded senders are filtered from message metadata before bodies are read; international Uber Eats receipts such as `noreply@uber.com` are outside scope.
 - Receipt analysis excludes unrelated mailbox content and unnecessary personal information.
 - The plugin does not operate a server, OAuth client, database, telemetry endpoint, or analytics service.
 - Generated Excel files remain under the host product's file controls and may contain sensitive personal patterns even when direct identifiers are omitted. The plugin does not upload or share them.

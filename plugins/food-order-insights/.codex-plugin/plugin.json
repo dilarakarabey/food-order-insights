@@ -1,7 +1,7 @@
 {
   "name": "food-order-insights",
-  "version": "0.2.2",
-  "description": "Analyze food-delivery receipts, lifestyle patterns, and explainable risk signals through connected Gmail tools.",
+  "version": "0.2.3",
+  "description": "Analyze Türkiye food-delivery receipts, lifestyle patterns, and explainable risk signals through connected Gmail tools.",
   "author": {
     "name": "Food Order Insights contributors"
   },
@@ -11,7 +11,7 @@
   "interface": {
     "displayName": "Food Order Insights",
     "shortDescription": "Understand food orders from Gmail receipts.",
-    "longDescription": "Search connected Gmail receipts to understand delivery spending, ordering patterns, estimated calories, meal-prep alternatives, lifestyle-change opportunities, and a transparent non-medical Risk Report, with optional Excel export and no separate backend.",
+    "longDescription": "Search Türkiye-specific food-order emails in connected Gmail to understand delivery spending, ordering patterns, estimated calories, meal-prep alternatives, lifestyle-change opportunities, and a transparent non-medical Risk Report, with optional Excel export and no separate backend.",
     "developerName": "Food Order Insights contributors",
     "category": "Productivity",
     "capabilities": [],

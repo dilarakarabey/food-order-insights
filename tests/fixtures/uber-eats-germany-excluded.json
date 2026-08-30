@@ -1,0 +1,17 @@
+{
+  "description": "Synthetic German Uber Eats receipt that must be excluded before body analysis",
+  "source_message": {
+    "id": "synthetic-uber-germany-001",
+    "from": "noreply@uber.com",
+    "subject": "Your Saturday evening order with Uber Eats",
+    "email_ts": "2026-02-14T19:30:00+01:00",
+    "body_text": "Thanks for ordering. Here's your receipt for Example Restaurant. Total €18.40. To view your full receipt, go to Uber Eats."
+  },
+  "expected": {
+    "excluded": true,
+    "body_read": false,
+    "canonical_order_count": 0,
+    "included_in_analytics": false,
+    "reason": "Sender is globally excluded and outside the Türkiye-only Uber Eats Trendyol Go scope."
+  }
+}

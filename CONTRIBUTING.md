@@ -23,6 +23,10 @@ Create a synthetic fixture that preserves only the structure needed to reproduce
 
 Do not add a whole-domain sender rule when an exact automated receipt address is available.
 
+## Geographic scope
+
+The current project scope is Türkiye. Uber Eats is supported only through the Türkiye-specific Uber Eats Trendyol Go / former Trendyol Go senders. Do not add `noreply@uber.com` or another international Uber Eats sender to analysis coverage; the tested German format lacks item-level food contents in the email body. A future geographic expansion requires an explicit scope decision, an item-complete email format, and synthetic fixtures.
+
 ## Quality expectations
 
 - Preserve source item, variant, extra, and note text.

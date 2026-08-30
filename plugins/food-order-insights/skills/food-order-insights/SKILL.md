@@ -1,6 +1,6 @@
 ---
 name: food-order-insights
-description: Analyze food-delivery history from connected Gmail receipts, including spending, time patterns, calorie ranges, meal-prep ideas, lifestyle recommendations, an explainable non-medical Risk Report, and Excel export. Use for delivery-order analysis, food spending, eating patterns, busy periods, practical replacements, risk scans, or workbook exports. Requires Gmail search/read tools; do not use for medical diagnosis or unrelated inbox analysis.
+description: Analyze Türkiye food-delivery history from connected Gmail receipts, including spending, time patterns, calorie ranges, meal-prep ideas, lifestyle recommendations, an explainable non-medical Risk Report, and Excel export. Use for Turkish delivery-order analysis, food spending, eating patterns, busy periods, practical replacements, risk scans, or workbook exports. Requires Gmail search/read tools; exclude international Uber Eats and do not use for medical diagnosis or unrelated inbox analysis.
 ---
 
 # Food Order Insights
@@ -30,6 +30,10 @@ Use the user's requested period. If none is given, default to the last 12 months
 
 ### 2. Find receipt senders
 
+Apply `global_exclusions` from `providers.json` before reading any candidate message. Excluded senders must not create orders, enrich orders, appear in analytics, or have their message bodies read.
+
+This project supports Uber Eats only through the Türkiye-specific Uber Eats Trendyol Go / former Trendyol Go senders listed under `trendyol-yemek`. Never include a message branded Uber Eats unless its sender exactly matches that provider's confirmed Turkish sender list. In particular, always exclude `noreply@uber.com`, which is used by international Uber Eats receipt formats.
+
 For each provider with confirmed senders, apply its `order_selection` rule from `providers.json`. Search canonical order messages first. Put Gmail operators in the query, for example:
 
 ```text
@@ -42,7 +46,7 @@ For Trendyol Go / Uber Eats Trendyol Go, only a subject beginning with `Yemek Si
 
 After collecting canonical placements, search delivery and invoice subjects over the placement window plus 24 hours. Use them only to enrich or update an existing order. Search cancellation and refund messages over the full requested scope because they may arrive later.
 
-For a provider without a confirmed sender, run only a small discovery search using the provider's brand and receipt subject hints. Inspect at most 20 candidate messages, identify likely automated receipt senders, and ask the user to confirm them before a full historical scan. Do not convert a guessed domain into a broad sender rule.
+For a Turkish provider without a confirmed sender, run only a small discovery search using the provider's brand and receipt subject hints. Inspect at most 20 candidate message headers, discard global exclusions before body reads, identify likely automated receipt senders, and ask the user to confirm them before a full historical scan. Do not convert a guessed domain into a broad sender rule or discover international Uber Eats senders.
 
 Prefer a message-ID search followed by batch reads. Read messages in bounded batches of at most 50 to avoid oversized results. Continue past a malformed or promotional email instead of failing the entire scan.
 

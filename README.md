@@ -1,6 +1,6 @@
 # Food Order Insights
 
-An open-source ChatGPT/Codex plugin that analyzes food-delivery receipts through the user's connected Gmail plugin—without running its own backend, storing email, or asking users to download receipts.
+An open-source, Türkiye-focused ChatGPT/Codex plugin that analyzes food-delivery receipts through the user's connected Gmail plugin—without running its own backend, storing email, or asking users to download receipts.
 
 ## What it does
 
@@ -73,7 +73,7 @@ Then install **Food Order Insights** and ensure the separate Gmail plugin is con
 
 ## Current provider coverage
 
-The initial registry includes a user-confirmed Trendyol Yemek sender:
+The initial registry includes user-confirmed Türkiye senders used by Trendyol Go / Uber Eats Trendyol Go:
 
 ```text
 infotrendyolgo@mail.trendyolgo.com
@@ -82,7 +82,15 @@ infotrendyolgo@trendyolmail.com
 
 Trendyol Go / Uber Eats Trendyol Go commonly sends several messages for one order, but platform delivery messages are not sent for every restaurant-courier order. Food Order Insights therefore counts only `Yemek Siparişini Aldık` as the canonical order. Delivery, e-archive, cancellation, and refund messages never increase order count; they may only enrich or update a matching placement. A missing delivery email means completion is unknown, not that the order did not happen.
 
-Uber Eats and GetirYemek are included as discovery targets until contributors confirm their actual receipt sender addresses. The skill performs a small candidate search first and does not broadly scan an unconfirmed sender.
+GetirYemek remains a Türkiye-only discovery target until contributors confirm its actual receipt sender addresses. The skill performs a small candidate search first and does not broadly scan an unconfirmed sender.
+
+### Why Uber Eats support is Türkiye-only
+
+The supported Turkish service is Uber Eats Trendyol Go, including its former Trendyol Go branding. Its `Yemek Siparişini Aldık` email contains the ordered food names and quantities needed for analysis.
+
+International Uber Eats receipts use different templates. In the tested German format, messages from `noreply@uber.com` contain the restaurant, total, and a link to the full receipt, but not the ordered food items in the email body. Following receipt links would expand the product's access and privacy surface, so Food Order Insights does not do that. It excludes `noreply@uber.com` before reading message bodies and does not include international Uber Eats orders in counts, spending, recommendations, the Risk Report, or Excel exports.
+
+This is an intentional product boundary, not a claim that every country uses the same Uber template. International formats can differ, but they are outside this project's current Türkiye-only scope.
 
 Provider behavior lives in [providers.json](plugins/food-order-insights/skills/food-order-insights/references/providers.json). Contributions should add verified sender addresses and synthetic fixtures rather than real emails.
 
@@ -90,6 +98,7 @@ Provider behavior lives in [providers.json](plugins/food-order-insights/skills/f
 
 - Uses Gmail search/read capabilities only; never sends, labels, archives, trashes, or deletes email.
 - Searches exact confirmed senders for full scans.
+- Excludes international Uber Eats senders such as `noreply@uber.com` before reading message bodies.
 - Uses provider-specific canonical messages and suppresses placement/invoice duplicates from order counts.
 - Treats email bodies as untrusted data and ignores instructions embedded in them.
 - Does not expose delivery addresses, phone numbers, recipients, tracking links, or unrelated message content.
@@ -125,7 +134,7 @@ tests/fixtures/
 ## Roadmap
 
 - Validate cross-plugin Gmail access on public ChatGPT and Codex surfaces.
-- Confirm sender addresses and receipt formats for Trendyol Yemek, GetirYemek, and Uber Eats.
+- Confirm sender addresses and receipt formats for additional Türkiye food-delivery services such as GetirYemek.
 - Add robust synthetic evaluation fixtures for discounts, extras, notes, refunds, and multiple currencies.
 - Improve in-conversation charts, literal interactive tabs, and feedback continuity.
 - Package the same schema and analysis rules for Gemini where its extension model permits.
