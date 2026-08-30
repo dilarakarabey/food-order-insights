@@ -68,7 +68,7 @@ Gmail araçları kullanılamıyorsa eklenti, kullanıcıdan Gmail'i bağlamasın
 Depoyu bilgisayarınıza klonlamanız gerekmez. Terminalde önce Food Order Insights marketplace'ini ekleyin:
 
 ```bash
-codex plugin marketplace add dilarakarabey/food-order-insights
+codex plugin marketplace add https://github.com/dilarakarabey/food-order-insights.git
 ```
 
 Ardından eklentiyi kurun:

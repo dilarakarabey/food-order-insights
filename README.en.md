@@ -68,7 +68,7 @@ If Gmail tools are unavailable, the skill asks the user to connect Gmail. It doe
 You do not need to clone the repository. First add the Food Order Insights marketplace in your terminal:
 
 ```bash
-codex plugin marketplace add dilarakarabey/food-order-insights
+codex plugin marketplace add https://github.com/dilarakarabey/food-order-insights.git
 ```
 
 Then install the plugin:
