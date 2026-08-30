@@ -10,16 +10,18 @@
         "infotrendyolgo@trendyolmail.com"
       ],
       "order_selection": {
-        "policy": "canonical_delivery_only",
+        "policy": "canonical_placement",
         "canonical_subject_prefixes": [
-          "Yemek Sipariş Teslimi"
+          "Yemek Siparişini Aldık"
         ],
-        "canonical_status": "completed",
+        "canonical_status": "placed",
         "auxiliary_subject_prefixes": [
-          "Yemek Siparişini Aldık",
+          "Yemek Sipariş Teslimi",
           "Uber Eats Trendyol Go E-Arşiv Faturası",
           "Uber Eats Trendyol Go - Sipariş İptali"
         ],
+        "auxiliary_search_after_hours": 24,
+        "fallback_match_window_hours": 6,
         "dedupe_key_priority": [
           "provider_order_id",
           "gmail_thread_id"

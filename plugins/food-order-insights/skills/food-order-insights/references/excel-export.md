@@ -27,12 +27,12 @@ Create one workbook with these sheets in this order:
 - Keep different currencies in separate rows and totals. Never sum currencies without an explicitly authorized conversion source and visible rate.
 - Use formulas for `net_spend = total_paid - refund_amount`, period totals, percentages, and the normalized risk score.
 - Keep risk thresholds and factor maxima visible in the Risk Report sheet so the score is auditable.
-- Derive completed-order counts, complete-covered-week counts, usable-time counts, late-hour counts, classifiable-order counts, matched-order counts, and factor measures from formulas or visibly reconciled helper tables linked to Orders and Items. Do not type aggregate Risk Report inputs as unexplained constants.
+- Derive countable-order counts, status counts, complete-covered-week counts, usable-time counts, late-hour counts, classifiable-order counts, matched-order counts, and factor measures from formulas or visibly reconciled helper tables linked to Orders and Items. Do not type aggregate Risk Report inputs as unexplained constants.
 - If controlled phrase matching is performed before workbook creation, include the normalized matched phrase and category in Items, then use workbook formulas to roll item hits up to one hit per order. Record the vocabulary version on Risk Report.
 - Keep receipt facts separate from estimates. Prefix estimated columns with `estimated_` and include a confidence column.
 - Represent calorie estimates as low and high columns, never a single exact value unless the receipt itself provides it.
 - Freeze header rows, enable filters on data tables, use readable widths, and avoid decorative complexity.
-- Include a generated-at timestamp, user timezone, requested date range, and a note that the workbook reflects delivery receipts rather than the user's complete diet or lifestyle.
+- Include a generated-at timestamp, user timezone, requested date range, and a note that the workbook reflects food-order emails rather than confirmed consumption or the user's complete diet or lifestyle.
 
 ## Verification
 

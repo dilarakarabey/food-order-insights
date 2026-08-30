@@ -80,7 +80,7 @@ infotrendyolgo@mail.trendyolgo.com
 infotrendyolgo@trendyolmail.com
 ```
 
-Trendyol Go / Uber Eats Trendyol Go commonly sends three messages for one order. Food Order Insights counts only `Yemek Sipariş Teslimi` as the canonical order. The placement and e-archive messages never increase order count; they may only enrich the same delivery when the provider order ID matches exactly.
+Trendyol Go / Uber Eats Trendyol Go commonly sends several messages for one order, but platform delivery messages are not sent for every restaurant-courier order. Food Order Insights therefore counts only `Yemek Siparişini Aldık` as the canonical order. Delivery, e-archive, cancellation, and refund messages never increase order count; they may only enrich or update a matching placement. A missing delivery email means completion is unknown, not that the order did not happen.
 
 Uber Eats and GetirYemek are included as discovery targets until contributors confirm their actual receipt sender addresses. The skill performs a small candidate search first and does not broadly scan an unconfirmed sender.
 
@@ -97,7 +97,7 @@ Provider behavior lives in [providers.json](plugins/food-order-insights/skills/f
 - Describes calories as estimates and gives ranges with confidence.
 - Provides general food-pattern observations and meal ideas, not diagnosis or medical treatment.
 - Calls its score an Order Pattern Risk Score: a visible, editable product heuristic rather than a medical, credit, insurance, or financial-risk score.
-- Suppresses the score when there are fewer than 12 completed orders, less than 8 weeks of coverage, or insufficient high-confidence data.
+- Suppresses the score when there are fewer than 12 countable canonical orders, less than 8 weeks of coverage, or insufficient high-confidence data.
 - Omits Gmail IDs, order IDs, raw email text, and customer notes from Excel by default.
 - Never infers that a user was ill; it asks the user to label unusual periods.
 

@@ -1,0 +1,51 @@
+{
+  "description": "Synthetic restaurant-courier order with a placement email and no platform delivery email",
+  "source_messages": [
+    {
+      "id": "synthetic-trendyol-restaurant-courier-001",
+      "from": "infotrendyolgo@mail.trendyolgo.com",
+      "subject": "Yemek Siparişini Aldık 🍔",
+      "email_ts": "2026-08-18T20:10:00+03:00",
+      "body_text": "654321 numaralı yemek siparişini aldık. Restoran: Örnek Pide\n1 x Kaşarlı Pide\nAra toplam: ₺280,00\nTeslimat ücreti: ₺20,00\nToplam: ₺300,00"
+    }
+  ],
+  "expected_canonical_order_count": 1,
+  "expected_counted_message_ids": [
+    "synthetic-trendyol-restaurant-courier-001"
+  ],
+  "expected_auxiliary_message_ids": [],
+  "expected_order": {
+    "gmail_message_id": "synthetic-trendyol-restaurant-courier-001",
+    "provider": "trendyol-yemek",
+    "provider_order_id": "654321",
+    "message_received_at": "2026-08-18T20:10:00+03:00",
+    "ordered_at": "2026-08-18T20:10:00+03:00",
+    "restaurant_name": "Örnek Pide",
+    "status": "placed",
+    "currency": "TRY",
+    "items": [
+      {
+        "raw_name": "Kaşarlı Pide",
+        "quantity": 1,
+        "unit_price": null,
+        "line_total": null,
+        "variant": null,
+        "extras": [],
+        "customer_note": null
+      }
+    ],
+    "food_subtotal": 280.0,
+    "delivery_fee": 20.0,
+    "service_fee": null,
+    "small_order_fee": null,
+    "tip": null,
+    "discount": null,
+    "refund_amount": null,
+    "total_paid": 300.0,
+    "confidence": 0.95,
+    "warnings": [
+      "Receipt order time absent; used the canonical placement message timestamp for analysis (-0.05).",
+      "No matching delivery email found; completion is unknown and the canonical order is retained."
+    ]
+  }
+}

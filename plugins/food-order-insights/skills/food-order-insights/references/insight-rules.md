@@ -19,7 +19,7 @@ Never present an estimate or inferred context as a receipt fact.
 - Use confidence `high` only when the receipt provides portion or nutrition information, `medium` for a well-known dish with clear size, and `low` otherwise.
 - Aggregate low bounds and high bounds separately.
 - State the percentage of orders or items with low-confidence estimates.
-- Do not infer weight change, energy requirements, deficiencies, or disease risk from delivery receipts.
+- Do not infer weight change, energy requirements, deficiencies, or disease risk from food-order emails.
 
 ## Food-pattern observations
 

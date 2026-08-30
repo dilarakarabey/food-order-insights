@@ -33,12 +33,14 @@ Use the user's requested period. If none is given, default to the last 12 months
 For each provider with confirmed senders, apply its `order_selection` rule from `providers.json`. Search canonical order messages first. Put Gmail operators in the query, for example:
 
 ```text
-from:infotrendyolgo@mail.trendyolgo.com subject:"Yemek Sipariş Teslimi" after:<unix-seconds> -in:spam -in:trash
+from:infotrendyolgo@mail.trendyolgo.com subject:"Yemek Siparişini Aldık" after:<unix-seconds> -in:spam -in:trash
 ```
 
 Paginate until the requested period is covered or no page remains. Deduplicate messages by Gmail message ID, then deduplicate canonical orders using the provider's stated key priority.
 
-For Trendyol Go / Uber Eats Trendyol Go, only a subject beginning with `Yemek Sipariş Teslimi` creates an order. `Yemek Siparişini Aldık` placement messages and `Uber Eats Trendyol Go E-Arşiv Faturası` messages never create orders and never increase order count. Search them only as optional auxiliary messages when the user requests a field—such as total spend—that the delivery email does not contain.
+For Trendyol Go / Uber Eats Trendyol Go, only a subject beginning with `Yemek Siparişini Aldık` creates an order. This placement email is canonical because restaurant-courier orders may never receive a platform delivery email. `Yemek Sipariş Teslimi`, `Uber Eats Trendyol Go E-Arşiv Faturası`, cancellation, and refund messages never create orders and never increase order count.
+
+After collecting canonical placements, search delivery and invoice subjects over the placement window plus 24 hours. Use them only to enrich or update an existing order. Search cancellation and refund messages over the full requested scope because they may arrive later.
 
 For a provider without a confirmed sender, run only a small discovery search using the provider's brand and receipt subject hints. Inspect at most 20 candidate messages, identify likely automated receipt senders, and ask the user to confirm them before a full historical scan. Do not convert a guessed domain into a broad sender rule.
 
@@ -54,11 +56,19 @@ Do not open tracking links or remote images. Do not read unrelated threads or at
 
 Follow the receipt schema. Preserve visible item, variant, extra, and customer-note text as written. Use `null` for absent values and add warnings for ambiguous values; never invent a price, quantity, date, restaurant, order ID, or note.
 
-Skip marketing emails, login messages, and courier updates without order details. Apply provider-specific canonical-message rules before generic status rules. Derive status only from explicit wording: an order-received or order-confirmation email is `placed`, not `completed`. Use `completed` only when the canonical source explicitly indicates delivery or completion.
+Skip marketing emails, login messages, and courier updates without order details. Apply provider-specific canonical-message rules before generic status rules. A Trendyol Go placement email creates a canonical order with status `placed`. A matched delivery email updates it to `completed`; absence of that email leaves status `placed` and means completion is unknown, not that the order failed. A matched cancellation, refund, or partial refund updates status accordingly.
 
 One canonical message produces at most one order. When multiple canonical messages share a provider order ID, keep one order and record the duplicate message IDs in warnings. If the provider order ID is absent, use Gmail thread ID only when the thread clearly belongs to one order; otherwise retain the ambiguity as a warning rather than merging on date, amount, restaurant, or item similarity alone.
 
-An auxiliary placement, invoice, cancellation, or refund message may update an existing canonical order only when its provider order ID exactly matches. It must not replace the canonical `gmail_message_id`, create an order row, or change order count. Preserve the source of enriched fields in warnings. If values conflict, keep the canonical delivery fact, report the conflict, and do not guess. Reconcile cancellation or refund messages to the canonical order when the exact ID matches; never count a cancelled order as completed.
+Match auxiliary messages in this order:
+
+1. exact provider order ID;
+2. the same Gmail thread when the thread clearly represents one order;
+3. only when neither identifier exists, the same provider and sender within six hours after placement, provided exactly one canonical placement is a candidate.
+
+Never merge by amount, restaurant, or item similarity alone. When the fallback has zero or multiple candidates, leave the auxiliary message unmatched and report it in coverage.
+
+An auxiliary delivery, invoice, cancellation, or refund message must not replace the canonical placement `gmail_message_id`, create an order row, or change order count. Preserve the source of enriched fields in warnings. If values conflict, keep the canonical placement fact, report the conflict, and do not guess. A matched delivery may change status to `completed`; a matched cancellation or refund may change status accordingly.
 
 Normalize every monetary field as a non-negative magnitude. In particular, store a displayed `-₺20` discount as `discount: 20`; subtraction is defined by the field, not its sign. `line_total` excludes extras only when extras are separately priced; do not count the same extra twice. `food_subtotal` includes the food items and charged extras. When enough fields exist, validate:
 
@@ -91,6 +101,7 @@ Keep exact receipt facts separate from estimates and inferences.
 - Separate food subtotal, delivery fee, service fee, small-order fee, tip, discount, and total paid when present.
 - Keep currencies separate unless the user explicitly requests conversion and provides or authorizes a rate source.
 - Show data coverage: canonical order messages, auxiliary messages, unique orders parsed by status, duplicate messages suppressed, skipped messages, low-confidence orders, and date range.
+- For providers with incomplete delivery-confirmation coverage, include canonical `placed` orders in order-frequency and food-pattern analysis unless explicitly cancelled. Show `completion unknown` separately rather than treating them as undelivered or excluding them.
 - Use calorie ranges and confidence, not point estimates presented as fact.
 - Describe unusual delivery-heavy periods, then ask the user whether the context was busy, ill, travel, social, no kitchen, or something else. Never assert illness.
 
@@ -120,7 +131,7 @@ Because this is a skill-only plugin, a “tab” means a named chat view unless 
 
 Apply `risk-report.md` exactly. Show the eligible factors, factor points, thresholds, overall normalized score when allowed, label, comparison period, coverage, and data-confidence level. Suppress the overall score when the minimum evidence rule fails; still show descriptive facts and say what data is missing.
 
-Call it an **Order Pattern Risk Score**, not a health, disease, nutrition, credit, or financial-risk score. Explain that it measures change opportunities visible in delivery receipts only. Never predict illness, weight change, financial distress, or a medical outcome.
+Call it an **Order Pattern Risk Score**, not a health, disease, nutrition, credit, or financial-risk score. Explain that it measures change opportunities visible in food-order emails only. Never predict illness, weight change, financial distress, or a medical outcome.
 
 ### 8. Build Lifestyle Changes
 
@@ -150,7 +161,7 @@ When the user accepts or dislikes a suggestion, ask for a brief reason only if i
 ## Boundaries
 
 - Provide general food-pattern observations and meal ideas, not medical diagnosis, treatment, or claims about disease.
-- The Risk Report is a transparent product heuristic based only on delivery receipts. Never present it as scientifically validated, population-normalized, or suitable for medical, insurance, employment, lending, or eligibility decisions.
+- The Risk Report is a transparent product heuristic based only on food-order emails. Never present it as scientifically validated, population-normalized, or suitable for medical, insurance, employment, lending, or eligibility decisions.
 - Avoid moral language such as “good,” “bad,” “cheat,” or “clean” food.
 - Do not shame frequency, spending, weight, or calorie intake.
 - Say when the sample is too small or uncertain for a conclusion.

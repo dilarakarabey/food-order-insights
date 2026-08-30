@@ -1,9 +1,9 @@
 {
   "description": "Synthetic eligible Risk Report aggregate covering 12 complete Monday-through-Sunday weeks without a user budget",
   "inputs": {
-    "completed_orders": 36,
+    "countable_orders": 36,
     "covered_calendar_weeks": 12,
-    "high_confidence_completed_orders": 33,
+    "high_confidence_countable_orders": 33,
     "orders_with_usable_time": 34,
     "usable_time_definition": "explicit ordered_at or original placed-message fallback",
     "late_hour_orders": 9,

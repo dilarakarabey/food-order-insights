@@ -1,5 +1,5 @@
 {
-  "description": "Synthetic three-message Trendyol Go order that must produce one canonical delivery order",
+  "description": "Synthetic three-message Trendyol Go order that must produce one canonical placement order",
   "source_messages": [
     {
       "id": "synthetic-trendyol-placed-001",
@@ -25,17 +25,17 @@
   ],
   "expected_canonical_order_count": 1,
   "expected_counted_message_ids": [
-    "synthetic-trendyol-delivered-001"
+    "synthetic-trendyol-placed-001"
   ],
   "expected_auxiliary_message_ids": [
-    "synthetic-trendyol-placed-001",
+    "synthetic-trendyol-delivered-001",
     "synthetic-trendyol-invoice-001"
   ],
   "expected_order": {
-    "gmail_message_id": "synthetic-trendyol-delivered-001",
+    "gmail_message_id": "synthetic-trendyol-placed-001",
     "provider": "trendyol-yemek",
     "provider_order_id": "123456",
-    "message_received_at": "2026-08-12T19:14:00+03:00",
+    "message_received_at": "2026-08-12T18:42:00+03:00",
     "ordered_at": "2026-08-12T18:42:00+03:00",
     "restaurant_name": "Örnek Mutfak",
     "status": "completed",
@@ -47,17 +47,13 @@
         "unit_price": null,
         "line_total": null,
         "variant": null,
-        "extras": [],
+        "extras": [
+          {
+            "name": "Ayran",
+            "price": null
+          }
+        ],
         "customer_note": "Soğansız lütfen"
-      },
-      {
-        "raw_name": "Ayran",
-        "quantity": 1,
-        "unit_price": null,
-        "line_total": null,
-        "variant": null,
-        "extras": [],
-        "customer_note": null
       }
     ],
     "food_subtotal": 255.0,
@@ -70,8 +66,8 @@
     "total_paid": 270.0,
     "confidence": 0.95,
     "warnings": [
-      "Receipt order time absent; used the exact-matched placement message timestamp for analysis (-0.05).",
-      "Order time, restaurant, monetary totals, and customer note enriched from exact matching provider order ID 123456; auxiliary messages did not increase order count."
+      "Receipt order time absent; used the canonical placement message timestamp for analysis (-0.05).",
+      "Status enriched to completed from the matching delivery message; auxiliary messages did not increase order count."
     ]
   }
 }
